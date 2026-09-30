@@ -1,0 +1,5 @@
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+@Component({standalone:true,imports:[RouterLink],template:`<main style="max-width:900px;margin:60px auto;padding:28px"><p>ESPACE PROFESSIONNEL</p><h1>Bienvenue, {{auth.user()?.username}}</h1><p>Votre compte personnel est dédié à la formation, sans accès aux dossiers des entreprises.</p><section class="panel"><h2>Mes formations</h2><p>Le suivi des inscriptions et les attestations seront disponibles après raccordement du module de formation.</p><a class="button" routerLink="/formations">Consulter le catalogue</a></section><p><a routerLink="/">Accueil</a> · <button class="outline" (click)="logout()">Déconnexion</button></p>@if(error){<p role="alert">{{error}}</p>}</main>`})
+export class ProfessionalComponent{auth=inject(AuthService);router=inject(Router);error='';async logout(){try{await this.auth.logout();await this.router.navigateByUrl('/connexion');}catch{this.error='Déconnexion indisponible. Réessayez.';}}}

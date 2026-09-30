@@ -1,0 +1,18 @@
+<a class="skip-link" href="#public-content">Aller au contenu</a>
+<header class="site-header">
+  <a class="brand" routerLink="/" aria-label="INPG — accueil"><img src="/assets/inpg-logo.svg" alt="Institut National du Pétrole et du Gaz" width="190" height="60"></a>
+  <span class="brand-label">LABEL<br><strong>INPG</strong></span>
+  <button class="mobile-toggle" (click)="menuOpen=!menuOpen" [attr.aria-expanded]="menuOpen" aria-controls="public-nav" aria-label="Ouvrir le menu"><app-icon name="menu"/></button>
+  <nav id="public-nav" [class.open]="menuOpen" aria-label="Navigation principale">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Accueil</a>
+    <a routerLink="/label" routerLinkActive="active" (click)="menuOpen=false">Le Label INPG</a>
+    <a routerLink="/demarche" routerLinkActive="active" (click)="menuOpen=false">Démarche</a>
+    <a routerLink="/acteurs" routerLinkActive="active" (click)="menuOpen=false">Acteurs</a>
+    <a routerLink="/formations" routerLinkActive="active" (click)="menuOpen=false">Formations</a>
+  </nav>
+  <div class="auth-actions">
+    @if(auth.user()){<a class="auth-space" [routerLink]="auth.landing" (click)="menuOpen=false"><app-icon name="people"/>Mon espace</a><button class="auth-logout" (click)="logout()">Déconnexion</button>}@else{<a class="auth-register" routerLink="/inscription" (click)="menuOpen=false">Inscription</a><a class="auth-login" routerLink="/connexion" (click)="menuOpen=false">Connexion</a>}
+  </div>
+</header>
+<div id="public-content"><router-outlet/></div>
+<footer class="simple-footer"><span>© 2026 INPG · Institut National du Pétrole et du Gaz</span><nav aria-label="Liens de pied de page"><a routerLink="/label">Le Label</a><a routerLink="/contact">Contact</a><a href="https://inpgsenegal.com/" target="_blank" rel="noopener noreferrer">Site institutionnel</a></nav></footer>

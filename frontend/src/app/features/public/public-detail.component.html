@@ -1,0 +1,24 @@
+<main>
+  <section class="detail-hero"><div class="detail-wrap"><nav class="breadcrumb" aria-label="Fil d’Ariane"><a routerLink="/">Accueil</a><app-icon name="chevron"/><span>{{title}}</span></nav><p class="detail-kicker">LABEL INPG</p><h1>{{title}}</h1><p class="intro">{{description}}</p></div></section>
+  <div class="detail-wrap detail-body">
+    @if(kind==='label' || kind==='niveaux-certification'){
+      @if(domain){
+        <section class="domain-focus"><span [class]="'domain-icon '+domain.tone"><app-icon [name]="domain.icon"/></span><div><p class="detail-kicker">UN VOLET, DES EXIGENCES ADAPTÉES</p><h2>Intégrer {{domain.name.toLowerCase()}} à votre démarche</h2><p>Choisissez ce volet lors de la demande. Les pièces attendues dépendent de votre activité et du référentiel applicable. L’évaluation documentaire et, si nécessaire, l’audit permettent d’examiner votre conformité.</p><a class="button" routerLink="/espace/dossiers/nouveau">Préparer ma demande</a></div></section>
+      } @else {
+        <section><div class="detail-section-heading"><h2>Les 3 volets de référence</h2><p>Une approche complémentaire de la conformité.</p></div><div class="detail-grid">@for(d of catalog.domains;track d.slug){<a class="domain-tile" [routerLink]="['/label',d.slug]"><span [class]="'domain-icon '+d.tone"><app-icon [name]="d.icon"/></span><h3>{{d.name}}</h3><p>{{d.text}}</p><span class="tile-link">Découvrir le volet <app-icon name="arrow"/></span></a>}</div></section>
+      }
+      <section class="level-section"><div class="detail-section-heading"><h2>Les niveaux de certification</h2><p>Le niveau correspond au nombre de volets certifiés.</p></div><div class="detail-grid">@for(level of catalog.levels;track level.name){<article [class]="'level-tile '+level.tone"><app-icon name="medal"/><h3>{{level.name}}</h3><strong>{{level.count}}</strong><p>{{level.text}}</p></article>}</div></section>
+    } @else if(kind==='demarche'){
+      <ol class="process-list">@for(step of catalog.steps;track step.title;let n=$index){<li><span>{{n+1}}</span><div><h2>{{step.title}}</h2><p>{{step.text}}</p></div></li>}</ol>
+    } @else if(kind==='acteurs'){
+      <div class="detail-grid">@for(actor of catalog.actors;track actor.name){<article class="domain-tile"><span class="domain-icon"><app-icon [name]="actor.icon"/></span><h2>{{actor.name}}</h2><p>Une checklist de preuves et d’exigences adaptée à cette activité et aux volets sélectionnés.</p><a class="tile-link" routerLink="/espace/dossiers/nouveau">Définir mon périmètre <app-icon name="arrow"/></a></article>}</div>
+    } @else if(kind==='faq'){
+      <div class="faq-list">@for(faq of faqs;track faq.q){<details><summary>{{faq.q}}</summary><p>{{faq.a}}</p></details>}</div>
+    } @else if(kind==='contact'){
+      <section class="contact-card"><app-icon name="people"/><div><p class="detail-kicker">INSTITUT NATIONAL DU PÉTROLE ET DU GAZ</p><h2>Votre interlocuteur pour le Label</h2><p>Retrouvez les coordonnées et canaux de contact à jour sur le site institutionnel de l’INPG.</p><a class="button" href="https://inpgsenegal.com/" target="_blank" rel="noopener noreferrer">Consulter le site de l’INPG <app-icon name="arrow"/></a></div></section>
+    } @else {
+      <section class="empty-public"><span class="domain-icon"><app-icon [name]="kind==='formations'?'people':'medal'"/></span><h2>{{kind==='formations'?'Catalogue à publier':'Registre non connecté'}}</h2><p>{{kind==='formations'?'Les formations validées par l’INPG seront affichées ici.':'Le registre de certifications n’est pas encore relié à cette page. Aucune vérification de validité n’est disponible pour le moment.'}}</p><a class="outline" routerLink="/contact">Contacter l’INPG</a></section>
+    }
+    <section class="detail-cta"><div><h2>Prêt à démarrer votre démarche ?</h2><p>Identifiez votre activité et les volets que vous souhaitez certifier.</p></div><a routerLink="/espace/dossiers/nouveau">Créer ma demande <app-icon name="arrow"/></a></section>
+  </div>
+</main>

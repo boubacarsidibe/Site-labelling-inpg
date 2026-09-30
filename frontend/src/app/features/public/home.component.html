@@ -1,0 +1,38 @@
+<main class="landing">
+  <section class="landing-hero" aria-labelledby="home-title">
+    <div class="hero-shade"></div>
+    <div class="wrap hero-copy">
+      <p class="kicker light">LABEL INPG</p>
+      <h1 id="home-title">Sécurité · Qualité ·<br>Environnement</h1>
+      <p class="hero-description">Un référentiel pour des entreprises responsables<br class="desktop-break"> dans la filière pétrole et gaz au Sénégal.</p>
+      <a class="action light-action" routerLink="/espace/dossiers/nouveau">Demander une certification <app-icon name="arrow"/></a>
+      <div class="hero-values"><span><app-icon name="leaf"/>Des entreprises<br>plus sûres</span><span><app-icon name="people"/>Des filières<br>plus performantes</span><span><app-icon name="chart"/>Un Sénégal<br>plus durable</span></div>
+    </div>
+  </section>
+
+  <section class="pillars-section">
+    <div class="wrap">
+      <div class="section-heading"><div><p class="kicker">NOS DOMAINES D’ENGAGEMENT</p><h2>3 piliers pour une performance durable</h2></div><p>Le Label INPG valorise les entreprises qui intègrent les exigences de sécurité, de qualité et de respect de l’environnement dans leurs activités.</p></div>
+      <div class="pillar-grid">@for(domain of domains; track domain.slug){
+        <article class="pillar-card"><div class="card-title"><span class="icon-disc" [class]="'icon-disc '+domain.tone"><app-icon [name]="domain.icon"/></span><h3>{{domain.name}}</h3></div><p>{{domain.text}}</p><a [routerLink]="['/label',domain.slug]">En savoir plus <app-icon name="arrow"/></a></article>
+      }</div>
+    </div>
+  </section>
+
+  <section class="levels-section wrap">
+    <div class="section-heading"><div><p class="short-rule" aria-hidden="true"></p><h2>Le Label INPG en 3 niveaux</h2></div><p>Une reconnaissance progressive selon le nombre de volets certifiés, adaptée au périmètre et à l’engagement de votre entreprise.</p></div>
+    <div class="level-grid">@for(level of levels;track level.name){
+      <a routerLink="/niveaux-certification" [class]="'level-card '+level.tone"><span class="medallion"><app-icon name="medal"/></span><div><h3>{{level.name}}</h3><p>{{level.text}}</p><strong>{{level.count}}</strong><span class="level-tag">{{level.tag}}</span></div></a>
+    }</div>
+  </section>
+
+  <section class="journey-section wrap">
+    <div class="section-heading"><div><p class="short-rule" aria-hidden="true"></p><h2>Comment obtenir le Label ?</h2></div><p>Un processus clair en 7 étapes, de votre demande au suivi de votre certification.</p></div>
+    <ol class="journey">@for(step of steps;track step.title;let n=$index){<li><a [routerLink]="['/demarche',stepSlug(step.title)]"><span class="step-number">{{n+1}}</span><h3>{{step.title}}</h3><p>{{step.text}}</p></a></li>}</ol>
+    <a class="journey-link" routerLink="/demarche">Comprendre la démarche <app-icon name="arrow"/></a>
+  </section>
+
+  <section class="collective wrap"><div class="collective-heading"><h2>Un engagement collectif</h2><p>Une démarche dédiée aux acteurs de l’aval pétrolier et gazier.</p></div><div class="actor-grid">@for(actor of actors;track actor.name){<a [routerLink]="['/acteurs',actorSlug(actor.name)]"><app-icon [name]="actor.icon"/><span>{{actor.name}}</span></a>}</div></section>
+
+  <section class="certification-cta"><div><p class="kicker light">PASSEZ À L’ACTION</p><h2>Demander une certification</h2><p>Engagez votre entreprise dans une démarche de sécurité,<br class="desktop-break"> de qualité et de responsabilité environnementale.</p></div><a class="action light-action" routerLink="/espace/dossiers/nouveau">Commencer ma demande <app-icon name="arrow"/></a></section>
+</main>

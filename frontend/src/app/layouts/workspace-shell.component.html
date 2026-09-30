@@ -1,0 +1,14 @@
+<div class="portal-shell">
+  @if(menuOpen){<button class="nav-scrim" (click)="menuOpen=false" aria-label="Fermer le menu"></button>}
+  <aside class="portal-sidebar" [class.open]="menuOpen">
+    <a class="portal-logo" routerLink="/"><img src="/assets/inpg-logo.svg" alt="INPG — accueil"></a>
+    <p class="space-label">{{admin?'ADMINISTRATION INPG':'ESPACE ENTREPRISE'}}</p>
+    <nav aria-label="Navigation de l’espace">@for(link of links;track link.path){<a [routerLink]="prefix+link.path" routerLinkActive="selected" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false"><app-icon [name]="link.icon"/><span>{{link.label}}</span></a>}</nav>
+    <a class="back-public" routerLink="/"><app-icon name="arrow"/> Retour au portail public</a>
+  </aside>
+  <div class="portal-body">
+    <header class="portal-topbar"><div class="portal-crumb"><button class="portal-menu" (click)="menuOpen=!menuOpen" [attr.aria-expanded]="menuOpen" aria-label="Ouvrir la navigation"><app-icon name="menu"/></button><a routerLink="/">Label INPG</a><app-icon name="chevron"/><span>{{admin?'Administration':'Espace entreprise'}}</span></div><div class="account-controls"><span>{{auth.user()?.username}}</span><button class="outline" (click)="logout()">Déconnexion</button>@if(logoutError){<span role="alert">{{logoutError}}</span>}</div></header>
+    <section class="portal-content"><router-outlet/></section>
+    <footer class="portal-footer"><span>INPG · Plateforme de labélisation</span><a routerLink="/verification-certificat">Vérifier un certificat</a></footer>
+  </div>
+</div>
