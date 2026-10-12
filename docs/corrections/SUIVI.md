@@ -98,7 +98,7 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 - [x] D4 CI GitHub Actions (tests backend, compilation et e2e)
 - [x] D5 Production : PostgreSQL, gunicorn, e-mails, cache, variables documentées
 - [x] D6 `package-lock.json` resynchronisé
-- [ ] D7 Modèle UML mis à jour avec les nouvelles règles
+- [x] D7 Modèle UML mis à jour avec les nouvelles règles
 
 ## Journal
 
@@ -111,3 +111,4 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 - 12/10/2026 : tests e2e Playwright (`frontend/e2e`, `npm run e2e`) : 15 scénarios dont le parcours complet à 5 acteurs (inscription → certificat Standard vérifiable). Correctif trouvé grâce à eux : l'API répondait 403 au lieu de 401 sans session, l'interface ne pouvait donc pas détecter l'expiration (classe `SessionAuth`).
 - 12/10/2026 : CI GitHub Actions (`.github/workflows/ci.yml`) : tests backend sur PostgreSQL 16 + migrations à jour + `check --deploy`, compilation Angular, puis e2e Playwright.
 - 12/10/2026 : documentation à jour : README (développement avec `DJANGO_DEBUG=1`, tests, e2e, variables de production, gunicorn/Nginx), `rbac.md`, `inscription.md`, `workflow-audit.md`, `design/pages-internes.md`.
+- 12/10/2026 : modèle UML StarUML régénéré (`docs/uml`) : nouvelles classes et énumérations, cas d'utilisation (vérification de certificat, invitations, référentiels, comptes), session expirée, états du certificat avec expiration, déploiement de production. Contrôle : 2 841 éléments, 0 référence non résolue.
