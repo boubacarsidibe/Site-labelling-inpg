@@ -78,3 +78,5 @@ class CurrentWorkflowSmokeTest(TestCase):
         self.assertEqual(application.status,Application.Status.CERTIFIED)
         self.assertTrue(Certificate.objects.filter(application=application,number=decision.json()['certificate']).exists())
         self.assertGreater(application.events.count(),8)
+        self.assertEqual(application.events.first().event_type,'DECISION_CERTIFIED')
+        self.assertIn('SUBMITTED',application.events.values_list('event_type',flat=True))

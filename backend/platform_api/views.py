@@ -19,7 +19,7 @@ REQUIRED_DOCUMENTS={
 }
 
 def event(application,user,event_type,note=''):
-    return WorkflowEvent.objects.create(application=application,actor=user,event_type=event,note=note)
+    return WorkflowEvent.objects.create(application=application,actor=user,event_type=event_type,note=note)
 
 def can_access_application(user,application):
     current=role(user)
