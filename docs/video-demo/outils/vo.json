@@ -1,0 +1,62 @@
+[
+[
+"s01",
+"Obtenir le Label INPG, c'est souvent des dossiers papier, des pièces envoyées par e-mail et des relances sans fin. Personne ne sait où en est une demande, ni qui doit agir. La Plateforme Label INPG réunit tout le parcours de certification dans un seul espace sécurisé."
+],
+[
+"s02",
+"L'interface, développée avec Angular, dialogue avec une API Django REST. C'est le serveur qui applique les règles métier et les droits de chaque rôle. Chaque action est vérifiée, puis enregistrée dans l'historique du dossier. Les connexions reposent sur des sessions sécurisées, et les pièces justificatives sont centralisées. Résultat : un même dossier, suivi de bout en bout par tous les acteurs."
+],
+[
+"s03",
+"Tout commence sur le portail public. On y découvre le Label, ses trois volets, Sécurité, Qualité et Environnement, la démarche et les formations. Une entreprise crée son compte en quelques secondes. Les comptes d'administration, eux, ne sont jamais ouverts à l'inscription publique."
+],
+[
+"s04",
+"Chaque acteur se connecte avec son identifiant. La plateforme reconnaît son rôle et l'oriente vers son espace : entreprise, gestionnaire, évaluateur, auditeur, décideur ou superadministrateur. Chacun ne voit que les menus et les dossiers qui le concernent."
+],
+[
+"s05",
+"Le superadministrateur crée les comptes internes depuis la page Utilisateurs : identifiant, e-mail, rôle et mot de passe temporaire. En quelques clics, l'équipe INPG est en place. Un administrateur ordinaire, lui, consulte cette page mais ne peut pas créer de comptes : cette création est réservée au superutilisateur."
+],
+[
+"s06",
+"Côté entreprise, le tableau de bord résume les démarches en cours. Sénégal Pétrole Distribution lance une nouvelle demande. Elle précise son activité et son périmètre, puis choisit deux volets : le niveau Gold est calculé automatiquement. À la création du brouillon, l'API génère la checklist officielle. L'entreprise dépose ses six pièces justificatives. Tant qu'elles ne sont pas validées, la soumission est refusée."
+],
+[
+"s07",
+"Place au travail d'équipe. À gauche, le gestionnaire ouvre le dossier et valide chaque pièce. À droite, l'entreprise actualise sa page : tout est validé, elle soumet son dossier."
+],
+[
+"s08",
+"Le gestionnaire démarre l'évaluation. Il affecte l'évaluateur, puis planifie l'audit avec l'auditeur. Le dossier apparaît alors dans leurs espaces. L'évaluateur et l'auditeur n'ont accès qu'aux dossiers qui leur sont explicitement affectés."
+],
+[
+"s09",
+"Après sa visite, l'auditeur marque l'audit comme réalisé. L'évaluateur relève un écart sur le volet Sécurité et crée une non-conformité. Côté entreprise, le dossier passe en « Corrections demandées »."
+],
+[
+"s10",
+"L'entreprise décrit son action corrective et la transmet. L'évaluateur la relit, clôture l'écart, puis transmet le dossier en décision."
+],
+[
+"s11",
+"Le décideur confirme le Label Gold et émet le certificat, avec un numéro unique. Le certificat apparaît aussitôt dans le registre des certifications, consultable par le décideur."
+],
+[
+"s12",
+"Les droits sont contrôlés par le serveur, pas seulement par l'interface. Un gestionnaire qui tente de créer une non-conformité est refusé. Une entreprise qui saisit l'adresse de l'administration arrive sur « Accès refusé ». Et chaque rôle n'affiche que ses propres menus : le gestionnaire, l'auditeur ou le décideur ne voient pas les mêmes pages."
+],
+[
+"s13",
+"L'entreprise retrouve son dossier certifié et suit les sept étapes de son parcours. Dans l'historique, chaque action est datée et attribuée : dépôt, validation, audit, correction, décision. Le superadministrateur tient le registre des certificats : il peut suspendre un certificat, puis le réactiver."
+],
+[
+"s14",
+"En résumé : l'entreprise dépose et corrige. Le gestionnaire valide et affecte. L'évaluateur et l'auditeur examinent. Le décideur certifie. Et le superadministrateur gère les comptes et le registre. Chacun à sa place, sur un même dossier."
+],
+[
+"s15",
+"Prochaines étapes : la vérification publique des certificats, et les modules Formations et Référentiels. Plateforme Label INPG : une certification simple, traçable et sécurisée."
+]
+]

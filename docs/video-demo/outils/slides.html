@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Slides</title>
+<style>
+:root{--navy:#10355f;--navy2:#0b2647;--sky:#8ebedc;--ink:#152f51;--muted:#5d7593;--bg:#f5f7fb;
+--ent:#1f9d6b;--ges:#2563eb;--eva:#7c3aed;--aud:#ea8a0c;--dec:#b5174a;--sup:#475569}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1536px;height:864px;overflow:hidden;font-family:Inter,"Inter Display",sans-serif;background:var(--navy2);color:#fff}
+.slide{position:absolute;inset:0;display:none}
+.on{display:block}
+body.wait *{animation-play-state:paused!important}
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes out{to{opacity:0;transform:translateY(-12px)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(142,190,220,.0)}50%{box-shadow:0 0 0 10px rgba(142,190,220,.18)}}
+@keyframes dash{to{stroke-dashoffset:0}}
+@keyframes kb{from{transform:scale(1.05)}to{transform:scale(1.14)}}
+.a{opacity:0;animation:up .8s cubic-bezier(.2,.7,.2,1) forwards}
+/* hook */
+#hook .bg{position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,#1b4a7d 0,#0b2647 60%)}
+#hook .pains{position:absolute;inset:0;padding:110px 120px;animation:out .7s ease 10s forwards}
+#hook h2{font-size:30px;font-weight:600;color:var(--sky);letter-spacing:.5px}
+#hook .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;margin-top:46px;width:1090px}
+#hook .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:30px 32px;display:flex;gap:22px;align-items:center}
+#hook .card b{display:grid;place-items:center;width:58px;height:58px;border-radius:12px;background:rgba(232,92,92,.18);color:#ff9b9b;font-size:30px;flex-shrink:0}
+#hook .card span{font-size:27px;font-weight:600;line-height:1.3}
+#hook .card small{display:block;font-size:17px;font-weight:400;color:#b8cbe0;margin-top:5px}
+#hook .title{position:absolute;inset:0;opacity:0;animation:fade 1s ease 10.4s forwards}
+#hook .title .img{position:absolute;inset:0;background:url(label-hero.png) center/cover;animation:kb 12s linear 10.4s forwards}
+#hook .title .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,38,71,.96) 0,rgba(11,38,71,.85) 48%,rgba(11,38,71,.35) 100%)}
+#hook .title .txt{position:absolute;left:120px;top:190px;width:820px}
+.logo-w{filter:brightness(0) invert(1)}
+#hook .title img.logo{width:300px;opacity:0;animation:up .8s ease 10.9s forwards}
+#hook .title h1{font-size:72px;line-height:1.05;margin-top:42px;font-weight:800;letter-spacing:-1.5px;opacity:0;animation:up .8s ease 11.4s forwards}
+#hook .title p{font-size:28px;color:#cfe0f2;margin-top:22px;opacity:0;animation:up .8s ease 12s forwards}
+#hook .title .tags{display:flex;gap:14px;margin-top:38px;opacity:0;animation:up .8s ease 12.6s forwards}
+.tag{padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.35);font-size:18px;font-weight:600}
+/* archi */
+#archi{background:var(--bg);color:var(--ink)}
+#archi h2,.slide-title{position:absolute;left:90px;top:56px;font-size:40px;font-weight:800;letter-spacing:-.6px;color:var(--ink)}
+.kicker{position:absolute;left:92px;top:30px;font-size:14px;letter-spacing:2.4px;font-weight:700;color:#47779f}
+#archi .box{position:absolute;top:250px;width:330px;height:330px;background:#fff;border:1px solid #dde6f0;border-radius:18px;padding:28px;box-shadow:0 12px 30px rgba(16,53,95,.08)}
+#archi .box h3{font-size:25px;margin-top:14px}
+#archi .box .ic{width:58px;height:58px;border-radius:14px;display:grid;place-items:center;background:#e8f0fa;color:var(--navy);font-size:28px;font-weight:800}
+#archi .box ul{list-style:none;margin-top:18px}
+#archi .box li{font-size:18px;color:var(--muted);padding:7px 0;border-top:1px solid #edf2f7}
+#archi .box li:first-child{border:0}
+#archi .b1{left:90px}#archi .b2{left:603px;border:2px solid var(--navy);animation:up .8s ease 3s forwards,pulse 2.4s ease 9s 4}#archi .b3{left:1116px}
+#archi .b2 .ic{background:var(--navy);color:#fff}
+#archi svg{position:absolute;left:0;top:0;width:1536px;height:864px}
+#archi .arrow{stroke:var(--navy);stroke-width:4;fill:none;stroke-dasharray:140;stroke-dashoffset:140}
+#archi .lab{position:absolute;font-size:16px;font-weight:700;color:#47779f;top:378px;width:150px;text-align:center}
+#archi .sec{position:absolute;left:90px;right:90px;bottom:70px;display:flex;gap:16px;justify-content:center}
+#archi .sec span{background:#10355f;color:#fff;padding:12px 22px;border-radius:999px;font-size:18px;font-weight:600}
+/* roles */
+#roles{background:var(--bg);color:var(--ink)}
+.rgrid{position:absolute;left:90px;right:90px;top:150px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.rcard{background:#fff;border:1px solid #dde6f0;border-radius:16px;padding:26px 28px;min-height:190px;border-top:8px solid var(--c)}
+.badge{display:inline-flex;align-items:center;gap:9px;padding:8px 16px;border-radius:999px;background:var(--c);color:#fff;font-weight:700;font-size:18px}
+.badge:before{content:"";width:9px;height:9px;border-radius:50%;background:#fff}
+.rcard p{font-size:19px;color:var(--muted);line-height:1.45;margin-top:16px}
+/* menus */
+#menus{background:var(--bg);color:var(--ink)}
+.mrow{position:absolute;left:58px;right:58px;top:140px;display:flex;gap:20px;justify-content:center}
+.mcol{width:220px;text-align:center}
+.mcol img{width:220px;border-radius:12px;box-shadow:0 10px 26px rgba(16,53,95,.18);display:block}
+.mcol .badge{font-size:15px;margin-bottom:14px;padding:7px 13px}
+/* recap */
+#recap{background:var(--bg);color:var(--ink)}
+table{position:absolute;left:90px;right:90px;top:128px;width:1356px;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid #dde6f0;border-radius:16px;overflow:hidden;font-size:18px}
+th{padding:14px 10px;font-size:15px;color:#fff;background:var(--c);font-weight:700}
+th:first-child{background:var(--navy);text-align:left;padding-left:22px;width:420px}
+td{padding:11px 10px;text-align:center;border-top:1px solid #edf2f7;color:var(--ink)}
+td:first-child{text-align:left;padding-left:22px;font-weight:600}
+td.y{color:#1f9d6b;font-size:22px;font-weight:800}
+td.t{font-size:15px;color:var(--muted);font-weight:600}
+tr{opacity:0;animation:up .6s ease forwards}
+.foot{position:absolute;left:92px;bottom:34px;font-size:16px;color:var(--muted)}
+/* end */
+#end .bg{position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,#1b4a7d 0,#0b2647 65%)}
+#end .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#end h3{font-size:22px;letter-spacing:2.5px;color:var(--sky);font-weight:700}
+#end .next{display:flex;gap:18px;margin:30px 0 0}
+#end .next span{padding:16px 26px;border:1px solid rgba(255,255,255,.3);border-radius:14px;font-size:22px;font-weight:600;background:rgba(255,255,255,.05)}
+#end .fin{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;animation:fade 1s ease 6.2s forwards;background:var(--navy2)}
+#end .fin img{width:330px}
+#end .fin h1{font-size:60px;font-weight:800;margin-top:34px;letter-spacing:-1px}
+#end .fin p{font-size:25px;color:#cfe0f2;margin-top:14px}
+#end .fin .by{margin-top:46px;font-size:20px;color:#b8cbe0}
+#end .fin .by b{color:#fff}
+</style></head><body class="wait">
+
+<section class="slide" id="hook"><div class="bg"></div>
+ <div class="pains">
+  <h2 class="a" style="animation-delay:.3s">Aujourd'hui, obtenir le Label INPG…</h2>
+  <div class="grid">
+   <div class="card a" style="animation-delay:1.2s"><b>✉</b><span>Dossiers papier et e-mails<small>Pièces dispersées, versions multiples</small></span></div>
+   <div class="card a" style="animation-delay:2.6s"><b>↻</b><span>Relances sans fin<small>Entreprise, INPG, auditeurs</small></span></div>
+   <div class="card a" style="animation-delay:4.4s"><b>?</b><span>Où en est la demande ?<small>Aucune vision de l'avancement</small></span></div>
+   <div class="card a" style="animation-delay:6s"><b>!</b><span>Qui doit agir ?<small>Responsabilités floues, aucune trace</small></span></div>
+  </div>
+ </div>
+ <div class="title"><div class="img"></div><div class="shade"></div>
+  <div class="txt"><img class="logo logo-w" src="inpg-logo.svg">
+   <h1>Plateforme<br>Label INPG</h1>
+   <p>Tout le parcours de certification, dans un seul espace sécurisé.</p>
+   <div class="tags"><span class="tag">Sécurité</span><span class="tag">Qualité</span><span class="tag">Environnement</span></div>
+  </div></div>
+</section>
+
+<section class="slide" id="archi">
+ <div class="kicker a">SOLUTION &amp; ARCHITECTURE</div><h2 class="a" style="animation-delay:.2s">Un dossier unique, vérifié par le serveur</h2>
+ <div class="box b1 a" style="animation-delay:.9s"><div class="ic">◱</div><h3>Interface Angular 18</h3><ul><li>Portail public</li><li>Espace entreprise</li><li>Back-office INPG</li><li>Menus filtrés par rôle</li></ul></div>
+ <div class="box b2 a"><div class="ic">⚙</div><h3>API Django REST</h3><ul><li>Règles métier du workflow</li><li>Droits par rôle (RBAC)</li><li>Historique de chaque action</li><li>Émission des certificats</li></ul></div>
+ <div class="box b3 a" style="animation-delay:5.2s"><div class="ic">▤</div><h3>Données centralisées</h3><ul><li>Organisations &amp; dossiers</li><li>Pièces justificatives</li><li>Non-conformités, audits</li><li>Registre des certificats</li></ul></div>
+ <svg><path class="arrow" d="M428 415 L595 415" style="animation:dash 1s ease 2.2s forwards"/><path d="M582 405 L597 415 L582 425" fill="none" stroke="#10355f" stroke-width="4" class="a" style="animation-delay:3s"/>
+  <path class="arrow" d="M941 415 L1108 415" style="animation:dash 1s ease 4.4s forwards"/><path d="M1095 405 L1110 415 L1095 425" fill="none" stroke="#10355f" stroke-width="4" class="a" style="animation-delay:5.2s"/></svg>
+ <div class="lab a" style="left:437px;animation-delay:2.4s">HTTPS · JSON</div>
+ <div class="lab a" style="left:950px;animation-delay:4.6s">ORM Django</div>
+ <div class="sec"><span class="a" style="animation-delay:12.5s">Sessions sécurisées (HttpOnly)</span><span class="a" style="animation-delay:13.3s">Protection CSRF</span><span class="a" style="animation-delay:14.1s">Limitation des tentatives</span><span class="a" style="animation-delay:14.9s">Refus par défaut</span></div>
+</section>
+
+<section class="slide" id="roles">
+ <div class="kicker a">CONNEXION &amp; RÔLES</div><h2 class="slide-title a" style="animation-delay:.15s">Six rôles, un espace adapté à chacun</h2>
+ <div class="rgrid">
+  <div class="rcard a" style="--c:var(--ent);animation-delay:.5s"><span class="badge">Entreprise</span><p>Crée sa demande, dépose ses pièces, répond aux corrections.</p></div>
+  <div class="rcard a" style="--c:var(--ges);animation-delay:.9s"><span class="badge">Gestionnaire</span><p>Valide les pièces, démarre l'évaluation, affecte les intervenants.</p></div>
+  <div class="rcard a" style="--c:var(--eva);animation-delay:1.3s"><span class="badge">Évaluateur</span><p>Examine les dossiers affectés, demande et clôture les corrections.</p></div>
+  <div class="rcard a" style="--c:var(--aud);animation-delay:1.7s"><span class="badge">Auditeur</span><p>Réalise l'audit planifié sur les dossiers qui lui sont affectés.</p></div>
+  <div class="rcard a" style="--c:var(--dec);animation-delay:2.1s"><span class="badge">Décideur</span><p>Confirme le niveau de Label et émet le certificat.</p></div>
+  <div class="rcard a" style="--c:var(--sup);animation-delay:2.5s"><span class="badge">Superadministrateur</span><p>Crée les comptes internes, gère le registre des certificats.</p></div>
+ </div>
+</section>
+
+<section class="slide" id="menus">
+ <div class="kicker a">CONTRÔLE D'ACCÈS</div><h2 class="slide-title a" style="animation-delay:.15s">Chaque rôle n'affiche que ses propres menus</h2>
+ <div class="mrow">
+  <div class="mcol a" style="--c:var(--ent);animation-delay:.4s"><span class="badge">Entreprise</span><img src="menu-spd.diallo.png"></div>
+  <div class="mcol a" style="--c:var(--ges);animation-delay:.7s"><span class="badge">Gestionnaire</span><img src="menu-gest.fall.png"></div>
+  <div class="mcol a" style="--c:var(--eva);animation-delay:1s"><span class="badge">Évaluateur</span><img src="menu-eval.sow.png"></div>
+  <div class="mcol a" style="--c:var(--aud);animation-delay:1.3s"><span class="badge">Auditeur</span><img src="menu-audit.diop.png"></div>
+  <div class="mcol a" style="--c:var(--dec);animation-delay:1.6s"><span class="badge">Décideur</span><img src="menu-decid.ba.png"></div>
+  <div class="mcol a" style="--c:var(--sup);animation-delay:1.9s"><span class="badge">Superadmin</span><img src="menu-superadmin.png"></div>
+ </div>
+</section>
+
+<section class="slide" id="recap">
+ <div class="kicker a">RÉCAPITULATIF</div><h2 class="slide-title a" style="animation-delay:.15s">Qui peut faire quoi ?</h2>
+ <table>
+  <tr style="animation-delay:.4s"><th>Action</th><th style="--c:var(--ent)">Entreprise</th><th style="--c:var(--ges)">Gestionnaire</th><th style="--c:var(--eva)">Évaluateur</th><th style="--c:var(--aud)">Auditeur</th><th style="--c:var(--dec)">Décideur</th><th style="--c:var(--sup)">Superadmin</th></tr>
+  <tr style="animation-delay:1.0s"><td>Dossiers visibles</td><td class="t">Les siens</td><td class="t">Tous</td><td class="t">Affectés</td><td class="t">Affectés</td><td class="t">Tous</td><td class="t">Tous</td></tr>
+  <tr style="animation-delay:1.8s"><td>Créer une demande, déposer les pièces</td><td class="y">✓</td><td></td><td></td><td></td><td></td><td class="y">✓</td></tr>
+  <tr style="animation-delay:2.6s"><td>Valider les pièces, affecter, planifier</td><td></td><td class="y">✓</td><td></td><td></td><td></td><td class="y">✓</td></tr>
+  <tr style="animation-delay:3.4s"><td>Réaliser l'audit</td><td></td><td></td><td></td><td class="y">✓</td><td></td><td class="y">✓</td></tr>
+  <tr style="animation-delay:4.2s"><td>Demander / clôturer une correction</td><td></td><td></td><td class="y">✓</td><td class="y">✓</td><td></td><td class="y">✓</td></tr>
+  <tr style="animation-delay:5.0s"><td>Répondre à une correction</td><td class="y">✓</td><td></td><td></td><td></td><td></td><td class="y">✓</td></tr>
+  <tr style="animation-delay:5.8s"><td>Transmettre en décision</td><td></td><td></td><td class="y">✓</td><td></td><td></td><td class="y">✓</td></tr>
+  <tr style="animation-delay:6.6s"><td>Décider et émettre le certificat</td><td></td><td></td><td></td><td></td><td class="y">✓</td><td class="y">✓</td></tr>
+  <tr style="animation-delay:7.4s"><td>Suspendre / réactiver un certificat</td><td></td><td></td><td></td><td></td><td></td><td class="y">✓</td></tr>
+  <tr style="animation-delay:8.2s"><td>Créer les comptes internes</td><td></td><td></td><td></td><td></td><td></td><td class="y">✓</td></tr>
+ </table>
+ <div class="foot a" style="animation-delay:9.2s">Droits vérifiés par l'API à chaque requête · Un administrateur ordinaire dispose des droits métier, sans création de comptes internes.</div>
+</section>
+
+<section class="slide" id="end"><div class="bg"></div>
+ <div class="c"><h3 class="a">PROCHAINES ÉTAPES</h3>
+  <div class="next"><span class="a" style="animation-delay:.6s">Vérification publique des certificats</span><span class="a" style="animation-delay:1.2s">Module Formations</span><span class="a" style="animation-delay:1.8s">Module Référentiels</span></div></div>
+ <div class="fin"><img class="logo-w" src="inpg-logo.svg"><h1>Plateforme Label INPG</h1><p>Une certification simple, traçable et sécurisée.</p>
+  <div class="by">Réalisé par <b>Boubacar SIDIBE</b></div></div>
+</section>
+<script>const id=new URLSearchParams(location.search).get('s');document.getElementById(id).classList.add('on');</script>
+</body></html>
