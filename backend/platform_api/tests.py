@@ -1,13 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 from .models import Organization, Application, RequiredDocument, AccessProfile, ApplicationAssignment
 
 class RBACTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.a=Organization.objects.create(legal_name='A',ninea='A',activity='Distribution',address='Dakar')
+        cls.a=Organization.objects.create(legal_name='A',ninea='A',activity='Distribution',address='Dakar',verified_at=timezone.now())
         cls.b=Organization.objects.create(legal_name='B',ninea='B',activity='Stockage',address='Dakar')
         cls.dossier=Application.objects.create(organization=cls.a,reference='A-1',level='Gold',domains=['Sécurité','Qualité'])
         cls.other=Application.objects.create(organization=cls.b,reference='B-1',level='Standard',domains=['Sécurité'])
@@ -75,6 +76,7 @@ class RBACTests(TestCase):
             self.assertEqual(self.client.get(f'/api/v1/applications/{self.dossier.pk}/').status_code,404)
     def test_manager_assignment_and_denial(self):
         url=f'/api/v1/applications/{self.dossier.pk}/assign/'
+        Application.objects.filter(pk=self.dossier.pk).update(status='SUBMITTED')
         self.as_role('ENTERPRISE')
         self.assertEqual(self.client.post(url,{'user_id':self.users['AUDITOR'].pk},format='json').status_code,403)
         self.as_role('MANAGER')
@@ -116,6 +118,7 @@ class RBACTests(TestCase):
         self.users['ENTERPRISE'].save()
         self.assertEqual(self.client.post('/api/v1/auth/login/',{'username':'ENTERPRISE','password':'Test-password-123!'},format='json').status_code,401)
     def test_login_throttle(self):
+        wrong={'username':'ENTERPRISE','password':'wrong-password'}
         for _ in range(10):
-            self.client.post('/api/v1/auth/login/',{},format='json')
-        self.assertEqual(self.client.post('/api/v1/auth/login/',{},format='json').status_code,429)
+            self.assertEqual(self.client.post('/api/v1/auth/login/',wrong,format='json').status_code,401)
+        self.assertEqual(self.client.post('/api/v1/auth/login/',wrong,format='json').status_code,429)

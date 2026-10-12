@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from .models import AccessProfile, Application, ApplicationAssignment, Audit, Certificate, Organization, RequiredDocument
@@ -7,7 +8,7 @@ from .models import AccessProfile, Application, ApplicationAssignment, Audit, Ce
 class CurrentWorkflowSmokeTest(TestCase):
     """Verifies the complete workflow that the API exposes today, without production data."""
     def setUp(self):
-        self.org=Organization.objects.create(legal_name='Entreprise test',ninea='WF-TEST',activity='Distribution',address='Dakar')
+        self.org=Organization.objects.create(legal_name='Entreprise test',ninea='WF-TEST',activity='Distribution',address='Dakar',verified_at=timezone.now())
         self.users={}
         for role in ['ENTERPRISE','MANAGER','EVALUATOR','AUDITOR','DECISION_MAKER']:
             user=get_user_model().objects.create_user(username=f'wf-{role.lower()}',password='Workflow-test-2026!')
@@ -18,7 +19,7 @@ class CurrentWorkflowSmokeTest(TestCase):
         self.client.force_authenticate(self.users[role])
     def test_request_reaches_certificate_with_all_roles(self):
         self.as_role('ENTERPRISE')
-        created=self.client.post('/api/v1/applications/',{'organization':self.org.pk,'level':'Gold','domains':['Sécurité','Qualité']},format='json')
+        created=self.client.post('/api/v1/applications/',{'organization':self.org.pk,'activity':'Distribution','domains':['Sécurité','Qualité']},format='json')
         self.assertEqual(created.status_code,201)
         application_id=created.json()['id']
         application=Application.objects.get(pk=application_id)
@@ -26,7 +27,7 @@ class CurrentWorkflowSmokeTest(TestCase):
 
         self.assertGreater(application.documents.count(),0)
         for document in application.documents.all():
-            uploaded=self.client.post(f'/api/v1/documents/{document.pk}/upload/',{'file':SimpleUploadedFile(f'{document.pk}.pdf',b'proof',content_type='application/pdf')},format='multipart')
+            uploaded=self.client.post(f'/api/v1/documents/{document.pk}/upload/',{'file':SimpleUploadedFile(f'{document.pk}.pdf',b'%PDF-1.4 proof',content_type='application/pdf')},format='multipart')
             self.assertEqual(uploaded.status_code,200)
 
         self.as_role('MANAGER')
@@ -47,7 +48,7 @@ class CurrentWorkflowSmokeTest(TestCase):
         self.assertEqual(self.client.post(f'/api/v1/applications/{application_id}/start-review/',{'note':'Dossier complet.'},format='json').status_code,200)
         application.refresh_from_db()
         self.assertEqual(application.status,Application.Status.UNDER_REVIEW)
-        planned=self.client.post(f'/api/v1/applications/{application_id}/schedule-audit/',{'auditor_id':self.users['AUDITOR'].pk},format='json')
+        planned=self.client.post(f'/api/v1/applications/{application_id}/schedule-audit/',{'auditor_id':self.users['AUDITOR'].pk,'scheduled_for':'2026-11-05T09:00'},format='json')
         self.assertEqual(planned.status_code,201)
 
         self.as_role('AUDITOR')

@@ -1,6 +1,3 @@
 from django.urls import include, path
-from django.conf import settings
-from django.conf.urls.static import static
+# Aucun service public de /media : les pièces sont téléchargées via l'API, après contrôle des droits.
 urlpatterns = [path('api/v1/', include('platform_api.urls'))]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

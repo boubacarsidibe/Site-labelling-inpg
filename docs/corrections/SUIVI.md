@@ -102,4 +102,6 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 
 ## Journal
 
+- 12/10/2026 : backend réécrit (modèles + migrations 0006/0007, réglages, workflow verrouillé, téléchargement protégé, e-mails, invitations, mot de passe oublié, comptes, référentiel, listes audits/NC, vérification publique). Tests existants adaptés (25/25). **Reste : tests dédiés à chaque correction, puis interface.**
+
 - 12/10/2026 : audit complet (technique, fonctionnel, synchronisation), décisions validées, création de ce fichier.
