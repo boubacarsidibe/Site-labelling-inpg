@@ -94,7 +94,7 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 
 - [ ] D1 Docs RBAC, inscription, workflow, pages internes à jour
 - [x] D2 Tests backend pour chaque correction (y compris accès simultanés)
-- [ ] D3 Tests de bout en bout de l'interface (Playwright)
+- [x] D3 Tests de bout en bout de l'interface (Playwright)
 - [ ] D4 CI GitHub Actions (tests backend, compilation et e2e)
 - [ ] D5 Production : PostgreSQL, gunicorn, e-mails, cache, variables documentées
 - [x] D6 `package-lock.json` resynchronisé
@@ -108,3 +108,4 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 
 - 12/10/2026 : audit complet (technique, fonctionnel, synchronisation), décisions validées, création de ce fichier.
 - 12/10/2026 : interface Angular reprise : intercepteur 401 avec `returnUrl`, rafraîchissement 30 s avec bandeau, libellés et valeurs de référence servis par l'API (`/meta/`), boutons selon capacités et statut, console d'administration réelle (tableau de bord, dossiers filtrables, évaluations, audits, non-conformités avec échéances, registre des certificats, référentiels éditables, comptes), pages publiques mot de passe oublié / réinitialisation / invitation / vérification de certificat, Mon entreprise et Mes certifications réelles, composants factices supprimés. `ng build` sans erreur ; parcours vérifié dans le navigateur pour chaque rôle (aucune erreur API). **Reste : e2e (D3), CI (D4), docs (D1, D5), UML (D7).**
+- 12/10/2026 : tests e2e Playwright (`frontend/e2e`, `npm run e2e`) : 15 scénarios dont le parcours complet à 5 acteurs (inscription → certificat Standard vérifiable). Correctif trouvé grâce à eux : l'API répondait 403 au lieu de 401 sans session, l'interface ne pouvait donc pas détecter l'expiration (classe `SessionAuth`).

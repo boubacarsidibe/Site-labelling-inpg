@@ -39,7 +39,7 @@ class RegistrationTests(TestCase):
         self.assertEqual(self.client.post('/api/v1/auth/register/',{**self.payload,'password':'123'},format='json').status_code,400)
     def test_admin_creation_superuser_only(self):
         payload={'username':'gestionnaire','email':'internal@example.test','password':'Strong-internal-852!','role':'ADMIN','is_superuser':True}
-        self.assertEqual(self.client.post('/api/v1/admin/accounts/',payload,format='json').status_code,403)
+        self.assertEqual(self.client.post('/api/v1/admin/accounts/',payload,format='json').status_code,401)
         admin=get_user_model().objects.create_user(username='admin')
         AccessProfile.objects.create(user=admin,role='ADMIN')
         self.client.force_authenticate(admin)

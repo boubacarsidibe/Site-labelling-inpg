@@ -37,7 +37,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = MAX_UPLOAD_SIZE + 1024 * 1024
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication'],
+    'DEFAULT_AUTHENTICATION_CLASSES': ['platform_api.authentication.SessionAuth'],
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
     # Nombre de proxys de confiance devant l'application (Nginx = 1) : l'IP réelle est lue dans X-Forwarded-For.
     'NUM_PROXIES': int(env('DJANGO_NUM_PROXIES')) if env('DJANGO_NUM_PROXIES') else None,

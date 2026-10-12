@@ -25,7 +25,7 @@ class RBACTests(TestCase):
         self.client.force_authenticate(self.users[role])
     def test_anonymous_denied(self):
         for endpoint in ['organizations','applications']:
-            self.assertEqual(self.client.get('/api/v1/'+endpoint+'/').status_code,403)
+            self.assertEqual(self.client.get('/api/v1/'+endpoint+'/').status_code,401)
     def test_no_role_denied(self):
         self.client.force_authenticate(self.unassigned)
         self.assertEqual(self.client.get('/api/v1/applications/').status_code,403)

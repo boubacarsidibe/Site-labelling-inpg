@@ -82,7 +82,7 @@ class SecurityTests(Base):
         response = self.client.get(data['download_url'])
         self.assertEqual(response.status_code, 200)
         self.assertEqual(b''.join(response.streaming_content), PDF)
-        self.assertEqual(APIClient().get(data['download_url']).status_code, 403)
+        self.assertEqual(APIClient().get(data['download_url']).status_code, 401)
         outsider = get_user_model().objects.create_user(username='autre', password=PASSWORD)
         AccessProfile.objects.create(user=outsider, role='ENTERPRISE', organization=self.other)
         self.client.force_authenticate(outsider)

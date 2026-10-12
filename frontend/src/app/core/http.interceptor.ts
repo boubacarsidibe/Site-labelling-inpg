@@ -10,7 +10,7 @@ export const sessionInterceptor:HttpInterceptorFn=(req,next)=>{
   return next(req).pipe(tap({error:(e:unknown)=>{
     const quiet=['/auth/me/','/auth/login/','/auth/password-reset','/public/','/invitations/'].some(p=>req.url.includes(p));
     if(e instanceof HttpErrorResponse&&e.status===401&&!quiet&&!router.url.startsWith('/connexion')){
-      auth.user.set(null);router.navigate(['/connexion'],{queryParams:{returnUrl:router.url,expiree:1}});
+      if(auth.user())auth.expired=true;auth.user.set(null);router.navigate(['/connexion'],{queryParams:{returnUrl:router.url,expiree:1}});
     }
   }}));
 };
