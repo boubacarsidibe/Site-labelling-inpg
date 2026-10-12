@@ -25,7 +25,7 @@ Chaque action est journalisée (acteur, date, note), affichée dans l'historique
 
 ## Concurrence et synchronisation
 
-Toutes les transitions s'exécutent en transaction avec verrou (`select_for_update`) et revérifient le statut sous verrou : une double soumission, deux décisions simultanées ou une action sur un dossier modifié entre-temps sont refusées proprement (400/409) au lieu de produire une erreur 500 ou un état incohérent. Les écrans se rafraîchissent toutes les 30 s et affichent un bandeau lorsque le dossier a été modifié par quelqu'un d'autre.
+Toutes les transitions s'exécutent en transaction avec verrou (`select_for_update`) et revérifient le statut sous verrou : une double soumission, deux décisions simultanées ou une action sur un dossier modifié entre-temps sont refusées proprement (400, avec un message invitant à actualiser la page) au lieu de produire une erreur 500 ou un état incohérent. Les écrans se rafraîchissent toutes les 30 s et affichent un bandeau lorsque le dossier a été modifié par quelqu'un d'autre.
 
 ## Tests
 
