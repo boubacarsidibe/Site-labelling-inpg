@@ -24,7 +24,6 @@ export class WorkspaceShellComponent {
     {label:'Audits',path:'audits',icon:'building'},
     {label:'Non-conformités',path:'non-conformites',icon:'tool'},
     {label:'Certificats',path:'certificats',icon:'medal'},
-    {label:'Formations',path:'formations',icon:'people'},
     {label:'Référentiels',path:'referentiels',icon:'flask'},
     {label:'Utilisateurs',path:'utilisateurs',icon:'people'}
   ];

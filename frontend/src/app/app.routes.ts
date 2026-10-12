@@ -7,13 +7,14 @@ import { PublicShellComponent } from './layouts/public-shell.component';
 import { EnterpriseShellComponent } from './layouts/enterprise-shell.component';
 import { AdminShellComponent } from './layouts/admin-shell.component';
 import { PublicDetailComponent } from './features/public/public-pages.component';
+import { ForgotPasswordComponent, ResetPasswordComponent, InvitationComponent, VerifyCertificateComponent } from './features/public/account-pages.component';
 import { ExploreComponent } from './features/public/explore.component';
 import { HomeComponent } from './features/public/home.component';
 import { CertificationFormComponent, CertificationTrackingComponent } from './features/enterprise/certification-pages.component';
 import { WorkflowDocumentsComponent } from './features/enterprise/workflow-documents.component';
 import { WorkflowCorrectionsComponent } from './features/enterprise/workflow-corrections.component';
 import { EnterpriseDashboardComponent } from './features/enterprise/enterprise-dashboard.component';
-import { DashboardComponent, EnterpriseDetailComponent, DocumentsComponent, NonConformitiesComponent, CertificatesComponent, TrainingsComponent } from './features/enterprise/enterprise-pages.component';
+import { EnterpriseDetailComponent, CertificatesComponent, TrainingsComponent } from './features/enterprise/enterprise-pages.component';
 import { AdminConsoleComponent } from './features/admin/admin-console.component';
 import { AdminWorkflowComponent } from './features/admin/admin-workflow.component';
 
@@ -22,6 +23,9 @@ export const routes: Routes = [
   {path:'professionnel',component:ProfessionalComponent,canActivate:[sessionGuard],data:{capability:'portal.professional'}},
   {path:'connexion',component:LoginComponent},
   {path:'acces-refuse',component:ForbiddenComponent},
+  {path:'mot-de-passe-oublie',component:ForgotPasswordComponent},
+  {path:'reinitialisation',component:ResetPasswordComponent},
+  {path:'invitation/:token',component:InvitationComponent},
   { path: '', component: PublicShellComponent, children: [
     { path: '', component: HomeComponent },
     { path: 'label', component: PublicDetailComponent, data: { title: 'Le Label INPG' } },
@@ -33,7 +37,7 @@ export const routes: Routes = [
     { path: 'acteurs/:actor', component: ExploreComponent },
     { path: 'formations', component: ExploreComponent },
     { path: 'formations/:course', component: ExploreComponent },
-    { path: 'verification-certificat', component: PublicDetailComponent, data: { title: 'Vérification de certificat' } },
+    { path: 'verification-certificat', component: VerifyCertificateComponent },
     { path: 'faq', component: PublicDetailComponent, data: { title: 'Questions fréquentes' } },
     { path: 'contact', component: PublicDetailComponent, data: { title: 'Contact' } }
   ] },
@@ -47,8 +51,8 @@ export const routes: Routes = [
     { path: 'dashboard', component: AdminConsoleComponent }, { path: 'dossiers', component: AdminConsoleComponent },
     { path: 'dossiers/:id', component: AdminWorkflowComponent }, { path: 'evaluations', component: AdminConsoleComponent },
     { path: 'audits', component: AdminConsoleComponent }, { path: 'non-conformites', component: AdminConsoleComponent },
-    { path: 'decisions/:id', component: AdminConsoleComponent }, { path: 'certificats', component: AdminConsoleComponent },
-    { path: 'formations', component: AdminConsoleComponent }, { path: 'referentiels', component: AdminConsoleComponent },
+    { path: 'certificats', component: AdminConsoleComponent },
+    { path: 'referentiels', component: AdminConsoleComponent },
     { path: 'utilisateurs', component: AdminConsoleComponent }, { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
   ] }, { path: '**', redirectTo: '' }
 ];

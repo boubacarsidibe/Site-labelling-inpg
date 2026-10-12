@@ -15,7 +15,8 @@ export class PublicDetailComponent {
     {q:'Quelle différence entre Standard, Gold et Platinum ?',a:'Standard correspond à un volet certifié, Gold à deux volets et Platinum aux trois volets : Sécurité, Qualité et Environnement.'},
     {q:'Quelles pièces dois-je préparer ?',a:'La checklist dépend de votre activité et des volets demandés. Elle est présentée pendant la constitution de votre dossier.'},
     {q:'Comment se déroule la certification ?',a:'Le parcours comprend sept étapes : demande, dossier, évaluation, correction, décision, certification et suivi.'},
-    {q:'Quelle est la durée de validité ?',a:'La durée de validité et les modalités de renouvellement doivent être définies par l’INPG. Elles figurent sur le certificat émis.'}
+    {q:'Quelle est la durée de validité ?',a:'Un certificat est valable un an. Avant l’échéance, l’entreprise dépose une demande de renouvellement depuis « Mes certifications ». Un certificat peut être suspendu ou révoqué par l’INPG ; son statut est consultable publiquement.'},
+    {q:'Comment vérifier un certificat ?',a:'Saisissez son numéro sur la page « Vérification de certificat » : le registre indique l’entreprise, le niveau, les volets et la validité à ce jour.'}
   ];
   get domain(){return this.catalog.domains.find(d=>d.slug===this.params()?.get('domain'))}
   get title(){return this.domain?.name ?? this.routeData()?.['title'] ?? 'Le Label INPG'}
@@ -29,8 +30,7 @@ export class PublicDetailComponent {
       acteurs:'Un référentiel adapté aux métiers de l’aval pétrolier et gazier.',
       formations:'Développer les compétences utiles à votre démarche de certification.',
       certifies:'Consultez les certifications publiées et vérifiez leur statut.',
-      'verification-certificat':'Vérifiez le statut d’un certificat à partir de son numéro ou de son QR code.',
-      faq:'Les réponses aux questions essentielles avant de commencer.',
+            faq:'Les réponses aux questions essentielles avant de commencer.',
       contact:'Échangez avec l’Institut National du Pétrole et du Gaz.'
     };return descriptions[this.kind] ?? descriptions['label'];
   }

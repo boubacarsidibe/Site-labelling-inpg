@@ -53,7 +53,7 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 - [x] W16 Code mort `can_access_application`
 - [x] W17 Pas de retrait d'affectation
 - [x] W18 Commentaire de refus de pièce figé : commentaire libre, obligatoire pour un refus
-- [~] W19 Date d'audit jamais saisie par l'interface ; compte rendu d'audit figé
+- [x] W19 Date d'audit jamais saisie par l'interface ; compte rendu d'audit figé
 - [x] W20 Type de demande (initiale/renouvellement) et activité perdus
 
 ## 3. Synchronisation et accès simultanés
@@ -61,11 +61,11 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 - [x] C1 Décisions, démarrages, affectations et non-conformités simultanés : une transaction verrouillée par action, messages clairs au lieu de 500
 - [x] C2 Statut enregistré avant la création du certificat : actions atomiques
 - [x] C3 Fichiers orphelins (nouveau dépôt, suppression)
-- [~] C4 Certificat suspendu/révoqué/expiré mais dossier affiché « Certifié »
-- [~] C5 Checklist et règle des niveaux dupliquées entre interface et API : l'API devient la source unique
-- [~] C6 Droits et libellés dupliqués dans l'interface : un seul fichier de libellés, boutons selon les capacités
-- [~] C7 Pas de rafraîchissement : rafraîchissement automatique et bandeau « dossier mis à jour »
-- [~] C8 Pas d'intercepteur 401/403 ; `returnUrl` ignoré ; double appel `/auth/me/`
+- [x] C4 Certificat suspendu/révoqué/expiré mais dossier affiché « Certifié »
+- [x] C5 Checklist et règle des niveaux dupliquées entre interface et API : l'API devient la source unique
+- [x] C6 Droits et libellés dupliqués dans l'interface : un seul fichier de libellés, boutons selon les capacités
+- [x] C7 Pas de rafraîchissement : rafraîchissement automatique et bandeau « dossier mis à jour »
+- [x] C8 Pas d'intercepteur 401/403 ; `returnUrl` ignoré ; double appel `/auth/me/`
 - [x] C9 Compteurs en mémoire par processus : cache partagé configurable (Redis)
 - [x] C10 SQLite un seul écrivain : transactions IMMEDIATE, PostgreSQL via `DATABASE_URL`
 - [x] C11 Date d'audit sans fuseau horaire
@@ -73,22 +73,22 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 
 ## 4. Interface et fonctionnalités par rôle
 
-- [ ] F1 Boutons affichés à tous les rôles : affichage selon les capacités et l'état
-- [ ] F2 Listes « Affecter » et « Planifier » liées à la même variable
-- [ ] F3 Statuts bruts en anglais : libellés français partout
-- [ ] F4 Suivi du dossier : étapes fausses pour un dossier certifié ou refusé ; décision, historique et certificat visibles par l'entreprise
-- [ ] F5 Lien « Voir le fichier » cassé
-- [~] F6 « Mon entreprise » factice : vraie fiche, membres, invitations
-- [~] F7 « Mes certifications » factice : certificats réels, expiration, renouvellement
-- [~] F8 Pages vides Évaluations, Audits, Non-conformités : vraies listes ; Référentiels éditable ; Formations retirée du menu d'administration
-- [ ] F9 Tableau de bord d'administration : compteurs et « à traiter »
-- [~] F10 Liste des dossiers : nom d'entreprise, filtre par statut
-- [~] F11 Utilisateurs : liste et activation/désactivation des comptes
+- [x] F1 Boutons affichés à tous les rôles : affichage selon les capacités et l'état
+- [x] F2 Listes « Affecter » et « Planifier » liées à la même variable
+- [x] F3 Statuts bruts en anglais : libellés français partout
+- [x] F4 Suivi du dossier : étapes fausses pour un dossier certifié ou refusé ; décision, historique et certificat visibles par l'entreprise
+- [x] F5 Lien « Voir le fichier » cassé
+- [x] F6 « Mon entreprise » factice : vraie fiche, membres, invitations
+- [x] F7 « Mes certifications » factice : certificats réels, expiration, renouvellement
+- [x] F8 Pages vides Évaluations, Audits, Non-conformités : vraies listes ; Référentiels éditable ; Formations retirée du menu d'administration
+- [x] F9 Tableau de bord d'administration : compteurs et « à traiter »
+- [x] F10 Liste des dossiers : nom d'entreprise, filtre par statut
+- [x] F11 Utilisateurs : liste et activation/désactivation des comptes
 - [x] F12 Vérification publique des certificats
-- [~] F13 Accès gestionnaire au registre et aux audits ; auditeur aux non-conformités
-- [ ] F14 Textes incohérents (page de connexion…)
+- [x] F13 Accès gestionnaire au registre et aux audits ; auditeur aux non-conformités
+- [x] F14 Textes incohérents (page de connexion…)
 - [x] F15 Références lisibles `INPG-AAAA-NNNN`
-- [ ] F16 Composants de démonstration morts
+- [x] F16 Composants de démonstration morts
 
 ## 5. Documentation, tests, déploiement
 
@@ -97,7 +97,7 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 - [ ] D3 Tests de bout en bout de l'interface (Playwright)
 - [ ] D4 CI GitHub Actions (tests backend, compilation et e2e)
 - [ ] D5 Production : PostgreSQL, gunicorn, e-mails, cache, variables documentées
-- [ ] D6 `package-lock.json` resynchronisé
+- [x] D6 `package-lock.json` resynchronisé
 - [ ] D7 Modèle UML mis à jour avec les nouvelles règles
 
 ## Journal
@@ -107,3 +107,4 @@ Légende : `[x]` fait et testé · `[~]` en cours · `[ ]` à faire
 - 12/10/2026 : backend réécrit (modèles + migrations 0006/0007, réglages, workflow verrouillé, téléchargement protégé, e-mails, invitations, mot de passe oublié, comptes, référentiel, listes audits/NC, vérification publique). Tests existants adaptés (25/25). **Reste : tests dédiés à chaque correction, puis interface.**
 
 - 12/10/2026 : audit complet (technique, fonctionnel, synchronisation), décisions validées, création de ce fichier.
+- 12/10/2026 : interface Angular reprise : intercepteur 401 avec `returnUrl`, rafraîchissement 30 s avec bandeau, libellés et valeurs de référence servis par l'API (`/meta/`), boutons selon capacités et statut, console d'administration réelle (tableau de bord, dossiers filtrables, évaluations, audits, non-conformités avec échéances, registre des certificats, référentiels éditables, comptes), pages publiques mot de passe oublié / réinitialisation / invitation / vérification de certificat, Mon entreprise et Mes certifications réelles, composants factices supprimés. `ng build` sans erreur ; parcours vérifié dans le navigateur pour chaque rôle (aucune erreur API). **Reste : e2e (D3), CI (D4), docs (D1, D5), UML (D7).**
