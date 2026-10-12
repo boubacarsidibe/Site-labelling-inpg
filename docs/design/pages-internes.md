@@ -1,14 +1,42 @@
-# Pages internes — 30 septembre 2026
+# Pages de l'interface
 
-## Pages raccordées au routeur
+## Public
 
-- `/espace/dossiers/nouveau` : nouvelle composition en sept étapes, trois sections de formulaire, cartes sélectionnables pour les volets, niveau calculé et checklist latérale. Responsive, labels natifs, confirmation accessible via `role=status`.
-- `/espace/dossiers/:id` : parcours complet en sept étapes et résumé du dossier. L’absence de raccordement backend est explicitement affichée ; aucun statut, auditeur ou échéance n’est inventé. La référence provient de la route et n’est pas considérée comme validée.
+| Page | Contenu |
+|---|---|
+| `/`, `/label`, `/demarche`, `/acteurs`, `/formations`, `/faq`, `/contact` | Présentation du Label |
+| `/verification-certificat` | Registre public : validité d'un certificat par son numéro (`?numero=`) |
+| `/inscription`, `/connexion` | Création de compte (Entreprise, Professionnel) et connexion, avec retour à la page demandée |
+| `/mot-de-passe-oublie`, `/reinitialisation` | Réinitialisation du mot de passe par e-mail |
+| `/invitation/:jeton` | Création du compte d'un collaborateur invité |
 
-## Limites fonctionnelles
+## Espace entreprise (`/espace`)
 
-Le brouillon du formulaire est enregistré dans le localStorage de cet appareil sous `inpg.application.draft`. Il n’est pas transmis, ni partagé entre utilisateurs ou appareils. La checklist utilise encore le référentiel local existant ; ses validations fictives ne sont pas affichées. Les autres anciennes pages utilisent encore des données de démonstration et nécessitent un travail séparé de raccordement API.
+| Page | Contenu |
+|---|---|
+| Tableau de bord | Dossiers et leur étape, statut réel du certificat (valide, suspendu, expiré…), alerte si l'organisation n'est pas vérifiée |
+| Mon entreprise | Fiche de l'organisation, membres, invitations (titulaire) |
+| Nouvelle demande | Activité, volets, niveau calculé, checklist officielle fournie par l'API ; renouvellement (`?renouvellement=`) ou suite d'un refus (`?suite=`) |
+| Dossier | Étapes, historique, audit, décision et motif, certificat, lien de renouvellement |
+| Pièces | Dépôt et remplacement, téléchargement, commentaires de refus, soumission |
+| Non-conformités | Réponse écart par écart, gravité, échéance, motif de renvoi |
+| Mes certifications | Certificats, expiration, lien de vérification publique, renouvellement |
+| Formations | Catalogue (renvoie vers le portail public) |
 
-## Vérifications
+## Administration (`/admin`)
 
-Compilation Angular réussie. Serveur local lancé sur `127.0.0.1:4200`. La vérification visuelle de ces deux nouvelles pages n’a pas pu être effectuée : le processus de l’outil navigateur échoue lors de l’application des permissions Windows. Les captures d’accueil présentes dans ce dossier concernent la refonte précédente, pas ces nouveaux écrans.
+Le menu n'affiche que les pages permises par les capacités du compte.
+
+| Page | Contenu |
+|---|---|
+| Tableau de bord | Compteurs par statut (liens filtrés), dossiers « à traiter » par le rôle connecté, certificats expirant sous 90 jours |
+| Dossiers | Recherche, filtre par statut, entreprise, certificat non valide signalé |
+| Fiche dossier | Uniquement les actions permises au rôle **et** à l'étape : vérification de l'organisation, revue des pièces, affectation, audit (date, compte rendu), non-conformités, clôture de l'évaluation, décision par volet |
+| Évaluations, Audits, Non-conformités | Listes de travail (échéances dépassées signalées) |
+| Certificats | Registre, suspension, réactivation, révocation confirmée |
+| Référentiels | Pièces exigées par volet et activité (administrateur) |
+| Utilisateurs | Comptes internes, création et activation/désactivation (superutilisateur) |
+
+Toutes les pages de travail se rafraîchissent toutes les 30 s ; les statuts et libellés viennent de l'API (`/api/v1/meta/` et champs `*_label`).
+
+Les captures `accueil-*.png` de ce dossier datent de la refonte de l'accueil.

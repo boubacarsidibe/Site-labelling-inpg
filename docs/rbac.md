@@ -1,60 +1,34 @@
 # RBAC — Label INPG
 
-## Matrice appliquée
+Les droits sont des **capacités** définies à un seul endroit : `backend/platform_api/access.py` (`CAPABILITIES`). L'API les vérifie sur chaque action ; l'interface les lit via `GET /api/v1/auth/me/` pour afficher menus et boutons, sans copie locale des rôles.
 
-| Rôle | Visibilité | Actions sur l’API existante |
+## Matrice
+
+| Rôle | Dossiers visibles | Actions |
 |---|---|---|
-| Entreprise | Son organisation et ses dossiers uniquement | Modifier son organisation ; créer et modifier ses brouillons ; soumettre un dossier complet |
-| Gestionnaire | Toutes les organisations et tous les dossiers | Lecture ; affecter des évaluateurs/auditeurs |
-| Évaluateur | Dossiers explicitement affectés | Lecture uniquement |
-| Auditeur | Dossiers explicitement affectés | Lecture uniquement |
-| Décideur | Tous les dossiers | Lecture uniquement |
-| Administrateur | Toutes les organisations et tous les dossiers | CRUD, affectation et soumission, sous réserve des règles métier |
-| Sans rôle / anonyme | Aucun accès métier | Portail public uniquement |
+| Entreprise | Ceux de son organisation | Modifier sa fiche (raison sociale et NINEA en lecture seule une fois déclarés) ; créer, modifier, supprimer et soumettre ses brouillons ; déposer les pièces ; répondre aux non-conformités ; consulter ses certificats ; voir les membres. Le **titulaire** invite des collaborateurs (`members.invite`) |
+| Professionnel | Aucun | Espace professionnel uniquement |
+| Gestionnaire | Tous, brouillons compris | Vérifier une organisation, revoir les pièces, démarrer l'évaluation, affecter/retirer un évaluateur, planifier un audit, consulter audits, non-conformités et registre |
+| Évaluateur | Ceux qui lui sont affectés | Signaler, clôturer ou renvoyer une non-conformité ; clôturer l'évaluation |
+| Auditeur | Ceux qui lui sont affectés | Rédiger le compte rendu de **ses** audits ; signaler une non-conformité |
+| Décideur | Tous **sauf les brouillons** | Décider (volets accordés ou refus motivé) |
+| Administrateur | Tous | Toutes les actions métier (peut cumuler les rôles sur un dossier), gérer les certificats (suspendre, réactiver, révoquer), éditer les référentiels, lister les comptes |
+| Superutilisateur | Tous | Celles de l'administrateur + créer les comptes internes, activer/désactiver un compte |
+| Anonyme / sans rôle | — | Portail public et vérification de certificat |
 
-Les permissions de menus `evaluations.read`, `audits.read`, `decisions.read`, `users.manage` et `referentials.manage` préparent les écrans concernés. Elles ne créent pas d’API d’évaluation, de décision ou d’administration des utilisateurs : ces fonctionnalités restent à développer. Un compte `is_staff` seul ne reçoit aucun droit. Un superutilisateur Django est administrateur.
+Une entreprise sans organisation, un compte inactif ou un `is_staff` sans profil n'ont aucun droit. Un identifiant hors périmètre renvoie 404.
 
-Les rôles constituent une base conservatrice à valider avec les responsables INPG. Les entreprises sans rattachement sont refusées. Les dossiers historiques restent inaccessibles aux entreprises tant qu’un administrateur n’a pas établi le rattachement réel ; aucune attribution automatique n’est effectuée.
+## Session et protections
 
-## Connexion et protections
+- Sessions Django (cookie HttpOnly) et CSRF, y compris à la connexion. Sans session, l'API répond **401** ; l'interface renvoie alors vers `/connexion?returnUrl=…&expiree=1` puis revient à la page demandée. Un manque de droits répond **403** (page « Accès refusé »).
+- Limitation des tentatives (cache partagé via `DJANGO_REDIS_URL` en production) : 10 échecs de connexion par minute et par IP (les connexions réussies ne comptent pas), 10 inscriptions par heure, 5 demandes de réinitialisation par heure, 20 acceptations d'invitation par heure, 60 vérifications publiques par minute.
+- Pièces déposées : PDF, PNG ou JPEG authentiques (signature vérifiée), 10 Mo maximum, téléchargées uniquement via `/api/v1/documents/<id>/download/` après contrôle des droits.
+- Toutes les actions du workflow s'exécutent dans une transaction avec verrou sur le dossier : deux personnes agissant en même temps ne peuvent pas produire un état incohérent (test d'accès simultanés sur PostgreSQL).
 
-- `/api/v1/auth/csrf/`, `login/`, `me/`, `logout/` ; sessions Django, cookie HttpOnly, protection CSRF y compris à la connexion et déconnexion.
-- Pas de JWT ni de rôle stocké comme autorité dans le navigateur ; les capacités sont relues depuis le serveur à la navigation.
-- Chaque endpoint métier vérifie ses capacités et filtre son queryset pour toutes les actions, listes et documents imbriqués inclus. Un identifiant hors périmètre produit 404.
-- L’entreprise ne peut ni transférer un dossier ni modifier son statut via PATCH. Seuls les brouillons sont modifiables ; une soumission vide ou répétée est refusée.
-- Les affectations ne confèrent pas de droit à un compte inactif ou sans rôle autorisé.
-- Le brouillon local Angular est désormais séparé par identifiant de compte. Ce stockage reste local, non chiffré et ne constitue pas une frontière de sécurité sur un ordinateur partagé. L’ancien brouillon global est conservé mais n’est plus chargé.
+## Comptes
 
-## Exploitation locale
+- Superutilisateur initial : `python manage.py createsuperuser` sur le serveur. Aucun compte ni mot de passe par défaut.
+- Comptes internes : écran **Administration → Utilisateurs** (ou `POST /api/v1/admin/accounts/`), réservé au superutilisateur. Activation/désactivation : `POST /api/v1/admin/accounts/<id>/set-active/` ; impossible sur soi-même ou sur un superutilisateur. La désactivation coupe l'accès dès la requête suivante.
+- `manage.py set_role` reste disponible pour rattacher un compte Entreprise ou Professionnel depuis le serveur ; il supprime les anciennes affectations du compte.
 
-Depuis `backend` :
-
-```powershell
-.\.venv\Scripts\python.exe manage.py migrate
-.\.venv\Scripts\python.exe manage.py createsuperuser
-.\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
-```
-
-Depuis `frontend` : `npm start -- --host 127.0.0.1 --port 4200`.
-Le proxy Angular relaie `/api` vers le backend. Ouvrir `/connexion`. Aucun compte ni mot de passe partagé n’est créé automatiquement.
-
-Les comptes métier sont provisionnés par un opérateur autorisé via Django (`create_user`, avec un mot de passe saisi de manière sécurisée, jamais commité). Attribution depuis le serveur :
-
-```powershell
-.\.venv\Scripts\python.exe manage.py set_role identifiant ENTERPRISE --organization 1
-.\.venv\Scripts\python.exe manage.py set_role identifiant EVALUATOR
-```
-
-Le changement de rôle supprime les anciennes affectations de ce compte pour éviter un accès résiduel. Le superutilisateur ne peut pas être rétrogradé par cette commande. Pour révoquer un accès, désactiver le compte (`is_active=False`) ou supprimer son `AccessProfile` via une opération d’administration contrôlée. La révocation est effective dès la requête suivante.
-
-`POST /api/v1/applications/<id>/assign/` avec `{"user_id": 12}` est réservé aux gestionnaires et administrateurs. La cible doit être un évaluateur/auditeur actif. Il n’existe pas encore d’interface de gestion des affectations ou des comptes.
-
-## Vérifications et limites
-
-17 tests Django : accès anonyme/sans rôle, isolation entreprise, IDOR, création et transfert, matrice lecture/écriture, affectations, révocation, CSRF, déconnexion, compte inactif et limitation des tentatives. Compilation Angular vérifiée ; tests navigateur non effectués (outil bloqué par les permissions Windows).
-
-Les anciennes pages contiennent encore des données de démonstration : le RBAC ne signifie pas que leur raccordement métier est terminé. Les APIs absentes devront réutiliser la politique de refus par défaut et obtenir leurs propres tests.
-
-Avant production : `DJANGO_DEBUG=0`, secret aléatoire `DJANGO_SECRET_KEY`, domaines et origines autorisés explicites, HTTPS, cache partagé pour le throttling, gestion du cycle de vie des comptes et journal d’audit. La limite de connexion locale (10 tentatives/minute/IP) n’est pas une protection distribuée suffisante. Ce travail n’est pas un audit de sécurité complet.
-
-Références : [permissions DRF](https://www.django-rest-framework.org/api-guide/permissions/) et [authentification de session](https://www.django-rest-framework.org/api-guide/authentication/).
+Les tests sont dans `backend/platform_api/tests.py`, `test_registration.py` et `test_corrections.py`.
