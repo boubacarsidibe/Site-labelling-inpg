@@ -61,7 +61,7 @@ L’interface est disponible sur `http://127.0.0.1:4200` ; le proxy Angular rela
 ## Vérifications
 
 ```powershell
-# Backend : 70 tests (SQLite par défaut ; DATABASE_URL pour PostgreSQL, où le test d'accès simultanés s'exécute aussi)
+# Backend : 78 tests (SQLite par défaut ; DATABASE_URL pour PostgreSQL, où le test d'accès simultanés s'exécute aussi)
 cd backend
 python manage.py test platform_api
 
@@ -69,7 +69,7 @@ python manage.py test platform_api
 cd frontend
 npm run build
 
-# Bout en bout : démarre une API et une interface jetables (ports 8100 et 4300), 15 scénarios
+# Bout en bout : démarre une API et une interface jetables (ports 8100 et 4300), 22 scénarios
 npx playwright install chromium   # une seule fois
 npm run e2e
 ```
