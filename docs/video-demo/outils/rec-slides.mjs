@@ -1,6 +1,6 @@
 import { browser, newPage, Capture, V } from './rec-lib.mjs';
 // Durées (s) des cartons ; chaque carton doit couvrir sa voix off + 0,7 s.
-const durs = { what: 28, levels: 21, parcours: 25, plateforme: 20, menus: 8, recap: 20, end: 16 };
+const durs = { what: 28, levels: 21, parcours: 28, plateforme: 20, menus: 8, recap: 20, end: 16 };
 const only = process.argv.slice(2);
 for (const [id, d] of Object.entries(durs)) {
   if (only.length && !only.includes(id)) continue;
