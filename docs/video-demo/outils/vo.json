@@ -29,7 +29,7 @@
  ],
  [
   "s08",
-  "À gauche, le gestionnaire vérifie d'abord l'organisation, puis valide chaque pièce. À droite, la page de l'entreprise se met à jour toute seule et l'en informe. Tout est validé : elle soumet son dossier."
+  "À gauche, le gestionnaire vérifie d'abord l'organisation, puis valide chaque pièce. À droite, la page de l'entreprise se met à jour toute seule et l'en informe. Tout est validé : elle soumet son dossier. Ainsi, aucun dossier incomplet n'atteint les évaluateurs."
  ],
  [
   "s09",
@@ -41,11 +41,11 @@
  ],
  [
   "s11",
-  "L'entreprise décrit son action corrective et la transmet. L'évaluateur la relit : il peut la clôturer, ou la renvoyer avec un motif. Ici, il la clôture et transmet le dossier en décision."
+  "L'entreprise décrit son action corrective et la transmet. L'évaluateur la relit : il peut la clôturer, ou la renvoyer avec un motif. Ici, il la clôture et transmet le dossier en décision. Chaque échange reste daté et tracé dans l'historique du dossier."
  ],
  [
   "s12",
-  "Le décideur coche les volets accordés : le niveau du Label se calcule tout seul. Avec deux volets, c'est le Gold. Il émet le certificat, valable un an, avec un numéro unique."
+  "Le décideur coche les volets accordés : le niveau du Label se calcule tout seul. Avec deux volets, c'est le Gold. Il émet le certificat, valable un an, avec un numéro unique. La décision est motivée et conservée dans l'historique."
  ],
  [
   "s13",
@@ -61,7 +61,11 @@
  ],
  [
   "s16",
-  "L'administrateur suit le portefeuille depuis son tableau de bord. Il peut suspendre, réactiver ou révoquer un certificat, et il maintient les référentiels : la liste des pièces exigées pour chaque volet et chaque activité."
+  "L'administrateur suit le portefeuille depuis son tableau de bord. Il peut suspendre, réactiver ou révoquer un certificat, et il maintient les référentiels : la liste des pièces exigées pour chaque volet et chaque activité. Un certificat expire automatiquement au bout d'un an : le renouvellement passe par une nouvelle demande liée."
+ ],
+ [
+  "s16b",
+  "La plateforme est conçue pour un usage officiel. Les actions sont verrouillées côté serveur : deux personnes ne peuvent pas se contredire sur un même dossier. Les fichiers déposés sont contrôlés, les connexions sont protégées, et chaque parcours est vérifié par des tests automatiques."
  ],
  [
   "s17",
