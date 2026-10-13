@@ -5,7 +5,8 @@ import { execFileSync } from 'node:child_process';
 
 export const B = 'http://127.0.0.1:4200';
 export const PW = process.env.DEMO_PASSWORD; // mot de passe local de démonstration, jamais versionné
-export const SHOTS = '/tmp/claude-0/video/shots';
+export const V = process.env.VIDEO_DIR || '/tmp/claude-0/video';
+export const SHOTS = `${V}/shots`;
 fs.mkdirSync(SHOTS, { recursive: true });
 
 export const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });

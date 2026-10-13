@@ -3,7 +3,7 @@
 lower thirds, subtitles) -> voice + music mix."""
 import json, os, re, subprocess, sys
 
-V = '/tmp/claude-0/video'
+V = os.environ.get('VIDEO_DIR', '/tmp/claude-0/video')
 SH = f'{V}/shots'
 OUT = f'{V}/build'
 os.makedirs(OUT, exist_ok=True)
@@ -98,15 +98,18 @@ def build_scene(sc):
         labels.append(lab); d = (b - a) / sp
         roles_tl.append((t, t + d, role)); t += d
     if 'split' in sc:
-        L, R, a, b, sp = sc['split']
-        off = t0(R) - t0(L)
-        il, ir = add_input(f'{SH}/{L}.mp4'), add_input(f'{SH}/{R}.mp4')
-        d = (b - a) / sp
-        chains.append(f"[{il}:v]tpad=stop_mode=clone:stop_duration=30,trim={a}:{b},setpts=(PTS-STARTPTS)/{sp},fps={FPS}[sl]")
-        chains.append(f"[{ir}:v]tpad=start_duration={off:.3f}:start_mode=clone:stop_mode=clone:stop_duration=30,trim={a}:{b},setpts=(PTS-STARTPTS)/{sp},fps={FPS}[sr]")
-        lab = f'p{len(labels)}'
-        chains.append(f"[sl][sr]hstack=inputs=2,pad=1920:1080:0:60:color=0x0b2647,drawbox=x=958:y=60:w=4:h=1020:color=0x0b2647:t=fill,setsar=1[{lab}]")
-        labels.append(lab); roles_tl.append((t, t + d, ('split',) + sc['roles'] + (sc['band'],))); t += d
+        L, R_, segs = sc['split'][0], sc['split'][1], sc['split'][2]
+        if not isinstance(segs, list): segs = [tuple(sc['split'][2:])]
+        off = t0(R_) - t0(L)
+        il, ir = add_input(f'{SH}/{L}.mp4'), add_input(f'{SH}/{R_}.mp4')
+        sp_labels = []
+        for si, (a, b, sp) in enumerate(segs):
+            chains.append(f"[{il}:v]tpad=stop_mode=clone:stop_duration=60,trim={a}:{b},setpts=(PTS-STARTPTS)/{sp},fps={FPS}[sl{si}]")
+            chains.append(f"[{ir}:v]tpad=start_duration={max(off,0):.3f}:start_mode=clone:stop_mode=clone:stop_duration=60,trim={a + max(-off,0)}:{b + max(-off,0)},setpts=(PTS-STARTPTS)/{sp},fps={FPS}[sr{si}]")
+            lab = f'p{len(labels)}'
+            chains.append(f"[sl{si}][sr{si}]hstack=inputs=2,pad=1920:1080:0:60:color=0x0b2647,drawbox=x=958:y=60:w=4:h=1020:color=0x0b2647:t=fill,setsar=1[{lab}]")
+            labels.append(lab); d = (b - a) / sp
+            roles_tl.append((t, t + d, ('split',) + sc['roles'] + (sc['band'],))); t += d
     vtot = t
     vo, off = sc['vo']
     total = max(vtot, off + VDUR[vo] + 0.7)

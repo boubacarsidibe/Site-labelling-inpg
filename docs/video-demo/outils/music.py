@@ -1,5 +1,6 @@
-import numpy as np, wave
-SR=44100; DUR=306; BPM=84; beat=60/BPM; bar=4*beat
+import numpy as np, wave, os, sys
+V=os.environ.get('VIDEO_DIR','/tmp/claude-0/video')
+SR=44100; DUR=int(sys.argv[1]) if len(sys.argv)>1 else 306; BPM=84; beat=60/BPM; bar=4*beat
 t_total=np.zeros(int(SR*DUR)); L=t_total.copy(); R=t_total.copy()
 def mtof(m): return 440*2**((m-69)/12)
 # progression (C major): C - G/B - Am - F , then Dm - G - Em - F ...
@@ -42,6 +43,6 @@ for b in range(nbars):
             add(L,t0+k*beat,kick); add(R,t0+k*beat,kick)
 fade=np.ones_like(L); n=int(4*SR); fade[:n]=np.linspace(0,1,n); fade[-n:]=np.linspace(1,0,n)
 st=np.stack([L*fade,R*fade],1); st/=np.abs(st).max()*1.12
-with wave.open('/tmp/claude-0/video/audio/music_raw.wav','wb') as w:
+with wave.open(f'{V}/audio/music_raw.wav','wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((st*32767).astype('<i2').tobytes())
 print('ok')
