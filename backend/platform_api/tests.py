@@ -39,7 +39,7 @@ class RBACTests(TestCase):
         for method,data in [('get',{}),('patch',{'level':'Platinum'}),('put',{})]:
             self.assertEqual(getattr(self.client,method)(url,data,format='json').status_code,404)
         self.assertEqual(self.client.post(url+'submit/').status_code,404)
-        self.assertEqual(self.client.delete(url).status_code,403)
+        self.assertEqual(self.client.delete(url).status_code,404)
     def test_cross_company_organization_denied(self):
         self.as_role('ENTERPRISE')
         self.assertEqual(self.client.patch(f'/api/v1/organizations/{self.b.pk}/',{'legal_name':'stolen'},format='json').status_code,404)

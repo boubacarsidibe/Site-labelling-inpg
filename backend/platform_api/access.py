@@ -5,9 +5,9 @@ from .models import AccessProfile, Application
 _STAFF_READ = ['portal.admin', 'applications.read', 'documents.download', 'nonconformities.read']
 CAPABILITIES = {
     'PROFESSIONAL': ['portal.professional'],
-    'ENTERPRISE': ['portal.enterprise', 'organizations.read', 'organizations.update', 'applications.read', 'applications.create', 'applications.update', 'applications.submit', 'documents.upload', 'documents.download', 'corrections.respond', 'certificates.read', 'nonconformities.read', 'members.read'],
+    'ENTERPRISE': ['portal.enterprise', 'organizations.read', 'organizations.update', 'applications.read', 'applications.create', 'applications.update', 'applications.delete', 'applications.submit', 'documents.upload', 'documents.download', 'corrections.respond', 'certificates.read', 'nonconformities.read', 'members.read'],
     'MANAGER': _STAFF_READ + ['organizations.read', 'organizations.verify', 'applications.assign', 'applications.review', 'documents.review', 'audits.read', 'audits.schedule', 'evaluations.read', 'certificates.read'],
-    'EVALUATOR': _STAFF_READ + ['evaluations.read', 'evaluations.perform', 'corrections.request', 'audits.read'],
+    'EVALUATOR': _STAFF_READ + ['documents.review', 'evaluations.read', 'evaluations.perform', 'corrections.request', 'audits.read'],
     'AUDITOR': _STAFF_READ + ['audits.read', 'audits.perform', 'corrections.request'],
     'DECISION_MAKER': _STAFF_READ + ['evaluations.read', 'audits.read', 'decisions.read', 'decisions.make', 'certificates.read'],
     'ADMIN': _STAFF_READ + ['organizations.read', 'organizations.create', 'organizations.update', 'organizations.delete', 'organizations.verify', 'applications.create', 'applications.update', 'applications.delete', 'applications.submit', 'applications.assign', 'applications.review', 'documents.review', 'documents.upload', 'evaluations.read', 'evaluations.perform', 'audits.read', 'audits.schedule', 'audits.perform', 'corrections.request', 'corrections.respond', 'decisions.read', 'decisions.make', 'certificates.read', 'certificates.manage', 'users.manage', 'referentials.manage', 'members.read'],

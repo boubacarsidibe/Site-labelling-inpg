@@ -1,6 +1,6 @@
 import json
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password, MinimumLengthValidator, CommonPasswordValidator, NumericPasswordValidator, UserAttributeSimilarityValidator
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
@@ -117,3 +117,30 @@ def password_reset_confirm(request):
         return JsonResponse({'detail': ' '.join(error.messages)}, status=400)
     user.set_password(password); user.save(update_fields=['password'])
     return JsonResponse({'detail': 'Mot de passe modifié. Vous pouvez vous connecter.'})
+
+@require_POST
+@csrf_protect
+def password_change(request):
+    """Changement du mot de passe par l'utilisateur connecté (tous les rôles). Les échecs comptent comme des échecs de connexion."""
+    if not request.user.is_authenticated or not request.user.is_active:
+        return JsonResponse({'detail': 'Authentification requise.'}, status=401)
+    try:
+        LOGIN_FAILURES.check(request)
+        data = body(request)
+    except Throttled as exc:
+        return throttled(exc)
+    except ValueError:
+        return JsonResponse({'detail': 'Requête invalide.'}, status=400)
+    current, new = data.get('current_password'), data.get('new_password')
+    if not isinstance(current, str) or not request.user.check_password(current):
+        LOGIN_FAILURES.hit(request)
+        return JsonResponse({'detail': 'Mot de passe actuel incorrect.'}, status=400)
+    try:
+        if not isinstance(new, str) or new == current:
+            raise ValidationError('Choisissez un nouveau mot de passe différent de l’actuel.')
+        validate_password(new, request.user, password_validators=PASSWORD_VALIDATORS)
+    except ValidationError as error:
+        return JsonResponse({'detail': ' '.join(error.messages)}, status=400)
+    request.user.set_password(new); request.user.save(update_fields=['password'])
+    update_session_auth_hash(request, request.user)  # la session en cours reste ouverte, les autres sont fermées
+    return JsonResponse({'detail': 'Mot de passe modifié.'})

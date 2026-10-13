@@ -370,7 +370,7 @@ class CertificateViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         if role(self.request.user) == 'ENTERPRISE':
             return self.queryset.filter(application__organization_id=profile(self.request.user).organization_id)
-        return self.queryset
+        return self.queryset.all()  # .all() : jamais le cache du queryset de classe (registre figé sinon)
     @action(detail=True, methods=['post'], url_path='update-status')
     @transaction.atomic
     def update_status(self, request, pk=None):
