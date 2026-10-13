@@ -7,7 +7,7 @@ import { PublicShellComponent } from './layouts/public-shell.component';
 import { EnterpriseShellComponent } from './layouts/enterprise-shell.component';
 import { AdminShellComponent } from './layouts/admin-shell.component';
 import { PublicDetailComponent } from './features/public/public-pages.component';
-import { ForgotPasswordComponent, ResetPasswordComponent, InvitationComponent, VerifyCertificateComponent } from './features/public/account-pages.component';
+import { ForgotPasswordComponent, ResetPasswordComponent, InvitationComponent, VerifyCertificateComponent, ChangePasswordComponent } from './features/public/account-pages.component';
 import { ExploreComponent } from './features/public/explore.component';
 import { HomeComponent } from './features/public/home.component';
 import { CertificationFormComponent, CertificationTrackingComponent } from './features/enterprise/certification-pages.component';
@@ -25,6 +25,7 @@ export const routes: Routes = [
   {path:'acces-refuse',component:ForbiddenComponent},
   {path:'mot-de-passe-oublie',component:ForgotPasswordComponent},
   {path:'reinitialisation',component:ResetPasswordComponent},
+  {path:'compte/mot-de-passe',component:ChangePasswordComponent,canActivate:[sessionGuard]},
   {path:'invitation/:token',component:InvitationComponent},
   { path: '', component: PublicShellComponent, children: [
     { path: '', component: HomeComponent },
@@ -44,7 +45,7 @@ export const routes: Routes = [
   { path: 'espace', component: EnterpriseShellComponent, canActivate:[sessionGuard],canActivateChild:[childAccessGuard],data:{capability:'portal.enterprise'}, children: [
     { path: 'tableau-de-bord', component: EnterpriseDashboardComponent }, { path: 'entreprise', component: EnterpriseDetailComponent },
     { path: 'dossiers/nouveau', component: CertificationFormComponent }, { path: 'dossiers/:id/documents', component: WorkflowDocumentsComponent },
-    { path: 'dossiers/:id/non-conformites', component: WorkflowCorrectionsComponent }, { path: 'dossiers/:id', component: CertificationTrackingComponent },
+    { path: 'dossiers/:id/non-conformites', component: WorkflowCorrectionsComponent }, { path: 'dossiers/:id/modifier', component: CertificationFormComponent }, { path: 'dossiers/:id', component: CertificationTrackingComponent },
     { path: 'certifications', component: CertificatesComponent }, { path: 'formations', component: TrainingsComponent }, { path: '', pathMatch: 'full', redirectTo: 'tableau-de-bord' }
   ] },
   { path: 'admin', component: AdminShellComponent, canActivate:[sessionGuard],canActivateChild:[childAccessGuard],data:{capability:'portal.admin'}, children: [

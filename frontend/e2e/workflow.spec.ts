@@ -116,10 +116,17 @@ test('l’évaluateur signale une non-conformité, l’entreprise y répond', as
   await enterprise.getByPlaceholder(/Expliquez les mesures/).fill('Plan d’urgence daté et signé le 10/10.');
   await enterprise.getByRole('button', { name: 'Transmettre la correction' }).click();
   await expect(enterprise.locator('.correction .chip', { hasText: 'Corrigée' })).toBeVisible();
+  // Preuve complémentaire : l'entreprise remplace une pièce pendant les corrections.
+  await enterprise.goto(`/espace/dossiers/${dossier}/documents`);
+  const first = enterprise.locator('.documents article').first();
+  await first.locator('input[type=file]').setInputFiles(PDF);
+  await expect(first.locator('.chip')).toHaveText('Déposé');
 });
 
-test('l’évaluateur clôture la correction et transmet en décision', async () => {
+test('l’évaluateur revoit la pièce remplacée, clôture la correction et transmet en décision', async () => {
   await evaluator.reload();
+  await evaluator.getByRole('button', { name: 'Valider', exact: true }).click();
+  await expect(evaluator.getByRole('status').filter({ hasText: 'Pièce validée.' })).toBeVisible();
   await evaluator.getByRole('button', { name: 'Clôturer' }).click();
   await expect(evaluator.locator('.state .chip')).toHaveText('En évaluation');
   await evaluator.getByRole('button', { name: /Transmettre en décision/ }).click();

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { apiError } from '../../core/api';
+import { AuthService } from '../../core/services/auth.service';
 
 const CARD=`.account{max-width:560px;margin:40px auto;padding:35px;background:white;border:1px solid #e0e7ef;border-radius:12px}.account img{width:160px;margin-bottom:25px}.kicker{font-size:10px;letter-spacing:2px;color:#55789c}.account h1{font-size:28px;margin:10px 0}.account>p{color:#6b8098}.account form{display:grid;gap:18px;margin:26px 0}.account label{display:grid;gap:7px;font-size:13px;color:#355474}.account small{font-size:11px;color:#6d8299}.account button:disabled{opacity:.6}@media(max-width:600px){.account{margin:15px;padding:24px}}`;
 
@@ -52,4 +53,14 @@ export class VerifyCertificateComponent{
   async search(){const n=this.number.trim();if(!n||this.busy)return;this.busy=true;this.error='';this.result=undefined;
     this.router.navigate([],{queryParams:{numero:n},replaceUrl:true});
     try{this.result=await firstValueFrom(this.http.get<Verification>(`/api/v1/public/certificates/${encodeURIComponent(n)}/`));}catch(e){this.error=apiError(e,'Vérification impossible.');}finally{this.busy=false;}}
+}
+
+@Component({standalone:true,imports:[FormsModule,RouterLink],template:`<main class="account"><a routerLink="/"><img src="/assets/inpg-logo.svg" alt="INPG"></a><p class="kicker">MON COMPTE · {{auth.user()?.username}}</p><h1>Changer mon mot de passe</h1><p>Les autres sessions ouvertes avec ce compte seront fermées.</p>
+@if(done){<p class="notice success" role="status">{{done}}</p>}@else{<form (ngSubmit)="submit()"><label>Mot de passe actuel<input name="current" type="password" autocomplete="current-password" [(ngModel)]="current" required></label><label>Nouveau mot de passe<input name="password" type="password" autocomplete="new-password" [(ngModel)]="password" required minlength="10"><small>10 caractères minimum ; évitez les mots de passe courants.</small></label><label>Confirmer le nouveau mot de passe<input name="confirm" type="password" autocomplete="new-password" [(ngModel)]="confirm" required></label>@if(error){<p class="notice error" role="alert">{{error}}</p>}<button class="button" [disabled]="busy||!current||!password">{{busy?'Enregistrement…':'Changer le mot de passe'}}</button></form>}
+<a [routerLink]="auth.landing">Retour à mon espace</a></main>`,styles:[CARD]})
+export class ChangePasswordComponent{
+  private http=inject(HttpClient);readonly auth=inject(AuthService);current='';password='';confirm='';busy=false;done='';error='';
+  async submit(){if(this.busy)return;this.error='';if(this.password!==this.confirm){this.error='Les deux nouveaux mots de passe ne correspondent pas.';return;}this.busy=true;
+    try{await csrf(this.http);const r=await firstValueFrom(this.http.post<{detail:string}>('/api/v1/auth/password-change/',{current_password:this.current,new_password:this.password}));this.current='';this.password='';this.confirm='';this.done=r.detail;}
+    catch(e){this.error=apiError(e,'Modification impossible.');}finally{this.busy=false;}}
 }

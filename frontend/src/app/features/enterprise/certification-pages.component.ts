@@ -22,16 +22,25 @@ export class CertificationFormComponent {
   domains:string[]=[]; activities:string[]=[]; certificates:OwnCertificate[]=[];
   activity=''; selected:string[]=[]; kind='INITIAL'; renewalOf:number|null=null; previous:number|null=null; scope=''; description=''; message=''; busy=false;
   documents:Requirement[]=[]; level='À définir';
+  /** Identifiant du brouillon modifié (route dossiers/:id/modifier), sinon création. */
+  editId=Number(this.route.snapshot.paramMap.get('id'))||0; original:string[]=[];
   async ngOnInit(){
     const meta=await this.metaService.load(); this.domains=meta.domains; this.activities=meta.activities;
     const org=this.auth.user()?.organization_id;
     try{const mine=await firstValueFrom(this.http.get<{activity:string}>(`/api/v1/organizations/${org}/`));this.activity=mine.activity||'';}catch{}
     try{this.certificates=(await firstValueFrom(this.http.get<OwnCertificate[]>('/api/v1/certificates/'))).filter(c=>c.effective_status!=='REVOKED');}catch{}
+    if(this.editId){try{const a=await firstValueFrom(this.http.get<{status:string;kind:string;activity:string;domains:string[];scope:string;description:string}>(`/api/v1/applications/${this.editId}/`));
+      if(a.status!=='DRAFT'){this.message='Ce dossier n’est plus un brouillon : il ne peut plus être modifié.';this.editId=0;}
+      else{this.kind=a.kind;this.activity=a.activity||this.activity;this.selected=[...a.domains];this.original=[...a.domains];this.scope=a.scope||'';this.description=a.description||'';}}
+      catch(e){this.message=apiError(e,'Brouillon introuvable.');}
+      await this.preview();return;}
     const q=this.route.snapshot.queryParamMap;
     if(q.get('renouvellement')){this.kind='RENEWAL';this.renewalOf=Number(q.get('renouvellement'));}
     if(q.get('suite')){this.previous=Number(q.get('suite'));}
     await this.preview();
   }
+  /** Volets retirés en modification : leurs pièces déposées seront supprimées. */
+  get removed(){return this.original.filter(d=>!this.selected.includes(d));}
   get unverified(){return this.auth.user()?.organization_verified===false;}
   toggle(domain:string){this.selected=this.selected.includes(domain)?this.selected.filter(d=>d!==domain):[...this.selected,domain];this.message='';this.preview();}
   /** Checklist et niveau calculés par l'API : exactement ce qui sera créé. */
@@ -50,6 +59,10 @@ export class CertificationFormComponent {
     if(!organization){this.message='Votre compte n’est pas rattaché à une entreprise.';return;}
     this.busy=true;this.message='';
     try{
+      if(this.editId){
+        await firstValueFrom(this.http.patch(`/api/v1/applications/${this.editId}/`,{activity:this.activity,domains:this.domains.filter(d=>this.selected.includes(d)),scope:this.scope,description:this.description}));
+        await this.router.navigate(['/espace/dossiers',this.editId,'documents']);return;
+      }
       const created=await firstValueFrom(this.http.post<{id:number}>('/api/v1/applications/',{organization,activity:this.activity,kind:this.kind,renewal_of:this.kind==='RENEWAL'?this.renewalOf:null,previous_application:this.previous,domains:this.domains.filter(d=>this.selected.includes(d)),scope:this.scope,description:this.description}));
       await this.router.navigate(['/espace/dossiers',created.id,'documents']);
     }catch(error){this.message=apiError(error,'Création du brouillon impossible.');}finally{this.busy=false;}

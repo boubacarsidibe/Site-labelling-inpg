@@ -7,7 +7,7 @@
     <a class="back-public" routerLink="/"><app-icon name="arrow"/> Retour au portail public</a>
   </aside>
   <div class="portal-body">
-    <header class="portal-topbar"><div class="portal-crumb"><button class="portal-menu" (click)="menuOpen=!menuOpen" [attr.aria-expanded]="menuOpen" aria-label="Ouvrir la navigation"><app-icon name="menu"/></button><a routerLink="/">Label INPG</a><app-icon name="chevron"/><span>{{admin?'Administration':'Espace entreprise'}}</span></div><div class="account-controls"><span>{{auth.user()?.username}}</span><button class="outline" (click)="logout()">Déconnexion</button>@if(logoutError){<span role="alert">{{logoutError}}</span>}</div></header>
+    <header class="portal-topbar"><div class="portal-crumb"><button class="portal-menu" (click)="menuOpen=!menuOpen" [attr.aria-expanded]="menuOpen" aria-label="Ouvrir la navigation"><app-icon name="menu"/></button><a routerLink="/">Label INPG</a><app-icon name="chevron"/><span>{{admin?'Administration':'Espace entreprise'}}</span></div><div class="account-controls"><span>{{auth.user()?.username}}</span><a class="outline" routerLink="/compte/mot-de-passe">Mot de passe</a><button class="outline" (click)="logout()">Déconnexion</button>@if(logoutError){<span role="alert">{{logoutError}}</span>}</div></header>
     <section class="portal-content"><router-outlet/></section>
     <footer class="portal-footer"><span>INPG · Plateforme de labélisation</span><a routerLink="/verification-certificat">Vérifier un certificat</a></footer>
   </div>
