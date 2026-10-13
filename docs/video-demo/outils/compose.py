@@ -41,37 +41,33 @@ VDUR = {k: dur(f'{V}/audio/{k}.mp3') / TEMPO for k in VO}
 # full: parts = [(clip, a, b, speed, role)]   zoom = (t1, t2, Z, px, py) in scene time
 # split: L, R clips, (a, b, speed), roles, band title
 S = [
- dict(n='hook', parts=[('slide-hook', 0, 22, 1, None)], vo=('s01', 1.0)),
- dict(n='archi', parts=[('slide-archi', 0, 26, 1, None)], vo=('s02', 0.6), lt=('Solution & architecture', 'Angular · Django REST')),
- dict(n='public', parts=[('public', 0, 5.4, 1.35, 'vis'), ('public', 5.4, 8.9, 1, 'vis'), ('public', 8.9, 11.7, 1, 'vis'),
-                         ('public', 14.6, 30.2, 2.4, 'vis'), ('public', 30.2, 34.5, 1, 'vis')], vo=('s03', 0.5),
-      lt=('Portail public & inscription', 'Visiteur'), fast=[(10.3, 16.8)]),
- dict(n='login', parts=[('login', 0, 8.8, 1, 'ges'), ('slide-roles', 0, 9.5, 1, None)], vo=('s04', 0.5),
-      lt=('Page de connexion', 'Gestionnaire')),
- dict(n='users', parts=[('users', 0, 10.3, 1, 'sup'), ('users', 10.3, 41.2, 4.0, 'sup'), ('users-admin', 0, 4.9, 1, 'adm')], vo=('s05', 0.4),
-      lt=('Utilisateurs : comptes internes', 'Superadministrateur'), lt2=(18.0, 'Utilisateurs', 'Administrateur'),
-      zoom=(2, 0.9, 4.9, 1.7, 1500, 560), fast=[(10.3, 18.0)]),
- dict(n='ent', parts=[('ent-demande', 0, 32.9, 1.25, 'ent')], vo=('s06', 0.4),
-      lt=('Nouvelle demande & dépôt des pièces', 'Entreprise'), zoom=(0, 8.6, 11.2, 1.8, 900, 470)),
- dict(n='split1', split=('split-validation-L', 'split-validation-R', 0, 22.6, 1.25), roles=('ges', 'ent'), vo=('s07', 0.5),
-      band='Validation des pièces  →  soumission du dossier'),
- dict(n='split2', split=('split-affectation-L', 'split-affectation-R', 0, 22.6, 1.25), roles=('ges', 'eva'), vo=('s08', 0.4),
-      band='Démarrage de l’évaluation, affectation et audit'),
- dict(n='nc', parts=[('auditeur', 0, 8.1, 1.5, 'aud')], split=('split-nc-L', 'split-nc-R', 0, 17.1, 1.25), roles=('eva', 'ent'),
-      vo=('s09', 0.4), lt=('Audit réalisé', 'Auditeur'), band='Non-conformité  →  « Corrections demandées »'),
- dict(n='split4', split=('split-reponse-L', 'split-reponse-R', 0, 20.9, 1.4), roles=('ent', 'eva'), vo=('s10', 0.5),
+ dict(n='what', parts=[('slide-what', 0, 28, 1, None)], vo=('s01', 1.0)),
+ dict(n='levels', parts=[('slide-levels', 0, 21, 1, None)], vo=('s02', 0.8)),
+ dict(n='parcours', parts=[('slide-parcours', 0, 25, 1, None)], vo=('s03', 0.8)),
+ dict(n='plateforme', parts=[('slide-plateforme', 0, 20, 1, None)], vo=('s04', 0.8)),
+ dict(n='public', parts=[('public', 0, 5.4, 1.1, 'vis'), ('public', 5.4, 13.4, 1.2, 'vis'), ('public', 13.4, 17, 1, 'vis'), ('public', 17, 22, 1, 'vis'),
+                         ('public', 22, 32, 2.4, 'vis'), ('public', 32, 41.6, 1.2, 'vis')], vo=('s05', 0.6),
+      lt=('Portail public & inscription', 'Visiteur')),
+ dict(n='users', parts=[('users', 0, 10.7, 1.2, 'sup'), ('users', 10.7, 42.2, 5.0, 'sup'), ('users', 42.2, 46.3, 1, 'sup'), ('login', 0, 9.4, 1.3, 'ges')], vo=('s06', 0.5),
+      lt=('Utilisateurs : comptes internes', 'Superadministrateur'), lt2=(22.5, 'Connexion', 'Gestionnaire')),
+ dict(n='ent', parts=[('ent-demande', 0, 8.1, 1.2, 'ent'), ('ent-demande', 8.1, 21.9, 1.0, 'ent'), ('ent-demande', 21.9, 24.3, 1, 'ent'),
+                      ('ent-demande', 24.3, 36.2, 1.5, 'ent'), ('ent-demande', 36.2, 40.5, 1, 'ent')], vo=('s07', 0.5),
+      lt=('Nouvelle demande & dépôt des pièces', 'Entreprise')),
+ dict(n='split1', split=('split-validation-L', 'split-validation-R', [(0, 16.5, 1.2), (16.5, 27.5, 4.0), (27.5, 43, 1.1)]), roles=('ges', 'ent'), vo=('s08', 0.5),
+      band='Vérification, validation  →  mise à jour automatique  →  soumission'),
+ dict(n='split2', split=('split-affectation-L', 'split-affectation-R', [(0, 25.4, 1.25)]), roles=('ges', 'eva'), vo=('s09', 0.5),
+      band='Démarrage de l’évaluation, affectation et audit daté'),
+ dict(n='nc', parts=[('auditeur', 0, 12.7, 1.3, 'aud')], split=('split-nc-L', 'split-nc-R', [(0, 23.3, 1.2)]), roles=('eva', 'ent'),
+      vo=('s10', 0.4), lt=('Compte rendu d’audit', 'Auditeur'), band='Non-conformité (gravité, échéance)  →  « Corrections demandées »'),
+ dict(n='split4', split=('split-reponse-L', 'split-reponse-R', [(0, 23.3, 1.5)]), roles=('ent', 'eva'), vo=('s11', 0.5),
       band='Action corrective  →  clôture  →  décision'),
- dict(n='decision', parts=[('decideur', 0, 18.5, 1.3, 'dec')], vo=('s11', 0.4), lt=('Décision & certificat', 'Décideur'),
-      zoom=(0, 8.6, 10.6, 2.0, 1620, 340)),
- dict(n='access', parts=[('refus-gestionnaire', 0, 8.9, 1.1, 'ges'), ('acces-refuse', 0, 4.7, 1, 'ent'), ('slide-menus', 0, 7.5, 1, None)],
-      vo=('s12', 0.3), lt=('Contrôle des droits', 'Gestionnaire'), lt2=(8.1, 'Saisie de /admin/dashboard', 'Entreprise'),
-      zoom=(0, 5.4, 7.9, 1.8, 640, 900)),
- dict(n='final', parts=[('ent-certifie', 0, 8.9, 1.15, 'ent'), ('historique', 0, 10.6, 1.5, 'sup'), ('registre', 0, 7.9, 1.2, 'sup')],
-      vo=('s13', 0.4), lt=('Suivi du dossier certifié', 'Entreprise'), lt2=(7.7, 'Historique & registre des certificats', 'Superadministrateur'),
-      zoom=(0, 1.6, 3.8, 1.8, 980, 400)),
- dict(n='recap', parts=[('slide-recap', 0, 19, 1, None)], vo=('s14', 0.6)),
- dict(n='end', parts=[('verification', 0, 3.7, 1, 'vis'), ('referentiels', 0, 2.5, 1, 'sup'), ('slide-end', 0, 15, 1, None)],
-      vo=('s15', 0.4), lt=('Modules à venir', 'Pages non encore raccordées')),
+ dict(n='decision', parts=[('decideur', 0, 27.5, 1.4, 'dec')], vo=('s12', 0.4), lt=('Décision par volets & certificat', 'Décideur')),
+ dict(n='verify', parts=[('verification', 0, 10, 1, 'vis')], vo=('s13', 0.4), lt=('Vérification publique du certificat', 'Visiteur')),
+ dict(n='entreprise', parts=[('ent-certifie', 0, 25.2, 1.5, 'ent')], vo=('s14', 0.4), lt=('Suivi, certifications, invitations', 'Entreprise')),
+ dict(n='access', parts=[('acces-refuse', 0, 5, 1, 'ent'), ('slide-menus', 0, 8, 1, None)], vo=('s15', 0.3), lt=('Contrôle des droits', 'Entreprise')),
+ dict(n='admin', parts=[('admin', 0, 19.8, 1.15, 'adm')], vo=('s16', 0.4), lt=('Certificats & référentiels', 'Administrateur')),
+ dict(n='recap', parts=[('slide-recap', 0, 20, 1, None)], vo=('s17', 0.6)),
+ dict(n='end', parts=[('slide-end', 0, 16, 1, None)], vo=('s18', 0.4)),
 ]
 
 def zoom_filter(z, total):
@@ -85,6 +81,7 @@ def zoom_filter(z, total):
 def build_scene(sc):
     """Render one scene to OUT/<n>.mp4; returns (duration, timeline of (start,end,role|tuple))."""
     inputs, chains, labels, roles_tl, t = [], [], [], [], 0.0
+    fastauto = []
     def add_input(f):
         inputs.extend(['-i', f]); return len(inputs) // 2 - 1
     for pi, (clip, a, b, sp, role) in enumerate(sc.get('parts', [])):
@@ -96,6 +93,7 @@ def build_scene(sc):
         if role: f += ",scale=1812:1020:flags=lanczos,pad=1920:1080:54:60:color=0x0b2647,setsar=1"
         chains.append(f + f"[{lab}]")
         labels.append(lab); d = (b - a) / sp
+        if sp >= 2: fastauto.append((t, t + d))
         roles_tl.append((t, t + d, role)); t += d
     if 'split' in sc:
         L, R_, segs = sc['split'][0], sc['split'][1], sc['split'][2]
@@ -109,6 +107,7 @@ def build_scene(sc):
             lab = f'p{len(labels)}'
             chains.append(f"[sl{si}][sr{si}]hstack=inputs=2,pad=1920:1080:0:60:color=0x0b2647,drawbox=x=958:y=60:w=4:h=1020:color=0x0b2647:t=fill,setsar=1[{lab}]")
             labels.append(lab); d = (b - a) / sp
+            if sp >= 2: fastauto.append((t, t + d))
             roles_tl.append((t, t + d, ('split',) + sc['roles'] + (sc['band'],))); t += d
     vtot = t
     vo, off = sc['vo']
@@ -121,7 +120,7 @@ def build_scene(sc):
          '-r', str(FPS), '-c:v', 'libx264', '-preset', 'medium', '-crf', '17', out])
     real = dur(out)
     print(f'{sc["n"]:9s} video {vtot:6.2f}s  scene {real:6.2f}s  voice {VDUR[vo]:5.2f}s')
-    return real, roles_tl
+    return real, roles_tl, fastauto
 
 only = sys.argv[1:]
 meta = {}
@@ -129,7 +128,7 @@ cache = f'{OUT}/meta.json'
 if os.path.exists(cache): meta = json.load(open(cache))
 for sc in S:
     if not only or sc['n'] in only or 'all' in only or sc['n'] not in meta:
-        d, tl = build_scene(sc); meta[sc['n']] = {'dur': d, 'tl': tl}
+        d, tl, fa = build_scene(sc); meta[sc['n']] = {'dur': d, 'tl': tl, 'fast': fa}
 json.dump(meta, open(cache, 'w'))
 
 # ---------------------------------------------------------------- timeline
@@ -195,7 +194,7 @@ for k, sc in enumerate(S):
         rl, rr = sc['roles']; lower(st + sa + 0.5, sc['band'], f"{ROLE[rl][0]}  ⇄  {ROLE[rr][0]}", rl)
     if 'lt2' in sc:
         at, t1, t2 = sc['lt2']; lower(st + at + 0.3, t1, t2, rolekey.get(t2))
-    for (a, b) in sc.get('fast', []):
+    for (a, b) in sc.get('fast', []) + meta[sc['n']].get('fast', []):
         ev(st + a, st + b, 'Fast', "{\\pos(1890,24)\\fad(200,200)}▶▶ Accéléré", 5)
 
 # subtitles: split each voice segment into chunks, timed by character count
