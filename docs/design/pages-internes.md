@@ -1,9 +1,11 @@
-# Pages internes — 30 septembre 2026
+# Pages internes — archive de conception du 30 septembre 2026
+
+> Ce document conserve une étape de conception et ne décrit pas nécessairement l'application courante. Les routes actives, les appels API et la checklist de validation constituent la référence pour une livraison.
 
 ## Pages raccordées au routeur
 
 - `/espace/dossiers/nouveau` : nouvelle composition en sept étapes, trois sections de formulaire, cartes sélectionnables pour les volets, niveau calculé et checklist latérale. Responsive, labels natifs, confirmation accessible via `role=status`.
-- `/espace/dossiers/:id` : parcours complet en sept étapes et résumé du dossier. L’absence de raccordement backend est explicitement affichée ; aucun statut, auditeur ou échéance n’est inventé. La référence provient de la route et n’est pas considérée comme validée.
+- `/espace/dossiers/:id` : parcours complet en sept étapes, résumé, audits et messagerie issus de l’API. Les statuts, références, auditeurs et échéances affichés proviennent exclusivement du dossier autorisé renvoyé par le backend.
 
 ## Limites fonctionnelles
 

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IconComponent } from '../../shared/components/icon.component';
 
-@Component({standalone:true,imports:[RouterLink,IconComponent],templateUrl:'./home.component.html',styleUrl:'./home.component.css'})
+@Component({standalone:true,imports:[RouterLink,IconComponent],templateUrl:'./home.component.html',styleUrl:'./home.component.css',styles:['@media(max-width:420px){.hero-values>span br{display:block!important}}']})
 export class HomeComponent {
   stepSlug(title:string){return ({'Demande':'demande','Dossier':'dossier','Évaluation':'evaluation','Correction':'correction','Décision':'decision','Certification':'certification','Suivi':'suivi'} as Record<string,string>)[title]||'';}
   actorSlug(name:string){return name.toLowerCase().replaceAll(' ','-');}

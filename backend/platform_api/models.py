@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+from .catalog import ACTIVITIES, LABEL_LEVELS, NON_CONFORMITY_SEVERITIES
 
 class AccessProfile(models.Model):
     class Role(models.TextChoices):
@@ -22,6 +24,9 @@ class ApplicationAssignment(models.Model):
 class Organization(models.Model):
     legal_name=models.CharField(max_length=255); ninea=models.CharField(max_length=64, unique=True); activity=models.CharField(max_length=32); address=models.CharField(max_length=255)
 class Application(models.Model):
+    class RequestType(models.TextChoices):
+        INITIAL='INITIAL','Certification initiale'
+        RENEWAL='RENEWAL','Renouvellement'
     class Status(models.TextChoices):
         DRAFT='DRAFT','Brouillon'
         SUBMITTED='SUBMITTED','Soumis'
@@ -30,7 +35,7 @@ class Application(models.Model):
         DECISION_PENDING='DECISION_PENDING','En décision'
         CERTIFIED='CERTIFIED','Certifié'
         REJECTED='REJECTED','Refusé'
-    organization=models.ForeignKey(Organization,on_delete=models.PROTECT,related_name='applications'); reference=models.CharField(max_length=32,unique=True); level=models.CharField(max_length=16); status=models.CharField(max_length=24,choices=Status.choices,default=Status.DRAFT); domains=models.JSONField(default=list); scope=models.CharField(max_length=500,blank=True); description=models.TextField(blank=True); created_at=models.DateTimeField(auto_now_add=True)
+    organization=models.ForeignKey(Organization,on_delete=models.PROTECT,related_name='applications'); reference=models.CharField(max_length=32,unique=True); request_type=models.CharField(max_length=16,choices=RequestType.choices,default=RequestType.INITIAL); level=models.CharField(max_length=16,choices=[(value,value) for value in LABEL_LEVELS]); activity=models.CharField(max_length=32,choices=[(value,value) for value in ACTIVITIES],default='Distribution'); status=models.CharField(max_length=24,choices=Status.choices,default=Status.DRAFT); domains=models.JSONField(default=list); scope=models.CharField(max_length=500,blank=True); description=models.TextField(blank=True); created_at=models.DateTimeField(auto_now_add=True)
 class RequiredDocument(models.Model):
     class Status(models.TextChoices):
         MISSING='MISSING','Non déposé'
@@ -71,7 +76,7 @@ class NonConformity(models.Model):
     reference=models.CharField(max_length=32)
     domain=models.CharField(max_length=32)
     description=models.TextField()
-    severity=models.CharField(max_length=16,default='MAJEURE')
+    severity=models.CharField(max_length=16,choices=[(value,value.title()) for value in NON_CONFORMITY_SEVERITIES],default='MAJEURE')
     status=models.CharField(max_length=16,choices=Status.choices,default=Status.OPEN)
     response=models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
@@ -79,7 +84,77 @@ class NonConformity(models.Model):
         constraints=[models.UniqueConstraint(fields=['application','reference'],name='unique_nonconformity_reference')]
 
 class Certificate(models.Model):
+    class Status(models.TextChoices):
+        VALID='VALID','Valide'
+        SUSPENDED='SUSPENDED','Suspendu'
+        REVOKED='REVOKED','Révoqué'
     application=models.OneToOneField(Application,on_delete=models.PROTECT,related_name='certificate')
     number=models.CharField(max_length=48,unique=True)
     issued_at=models.DateTimeField(auto_now_add=True)
-    status=models.CharField(max_length=16,default='VALID')
+    status=models.CharField(max_length=16,choices=Status.choices,default=Status.VALID)
+    expires_at=models.DateTimeField(null=True,blank=True)
+
+    @property
+    def effective_status(self):
+        if self.status == self.Status.VALID and self.expires_at and self.expires_at <= timezone.now():
+            return 'EXPIRED'
+        return self.status
+
+    @property
+    def is_active(self):
+        return self.effective_status == self.Status.VALID
+
+class Training(models.Model):
+    class Format(models.TextChoices):
+        IN_PERSON='IN_PERSON','Présentiel'
+        ONLINE='ONLINE','En ligne'
+        HYBRID='HYBRID','Hybride'
+    title=models.CharField(max_length=255)
+    description=models.TextField()
+    duration_days=models.PositiveSmallIntegerField(default=1)
+    format=models.CharField(max_length=16,choices=Format.choices,default=Format.IN_PERSON)
+    starts_at=models.DateTimeField(null=True,blank=True)
+    capacity=models.PositiveIntegerField(default=20)
+    active=models.BooleanField(default=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+class TrainingEnrollment(models.Model):
+    class Status(models.TextChoices):
+        REQUESTED='REQUESTED','Demande envoyée'
+        CONFIRMED='CONFIRMED','Confirmée'
+        COMPLETED='COMPLETED','Terminée'
+        CANCELLED='CANCELLED','Annulée'
+    training=models.ForeignKey(Training,on_delete=models.CASCADE,related_name='enrollments')
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='training_enrollments')
+    organization=models.ForeignKey(Organization,null=True,blank=True,on_delete=models.SET_NULL,related_name='training_enrollments')
+    status=models.CharField(max_length=16,choices=Status.choices,default=Status.REQUESTED)
+    enrolled_at=models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints=[models.UniqueConstraint(fields=['training','user'],name='unique_training_enrollment')]
+
+class RequirementTemplate(models.Model):
+    domain=models.CharField(max_length=32)
+    activity=models.CharField(max_length=32,blank=True)
+    name=models.CharField(max_length=255)
+    mandatory=models.BooleanField(default=True)
+    active=models.BooleanField(default=True)
+    version=models.CharField(max_length=16,default='1.0')
+    created_at=models.DateTimeField(auto_now_add=True)
+
+class ApplicationMessage(models.Model):
+    application=models.ForeignKey(Application,on_delete=models.CASCADE,related_name='messages')
+    author=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True)
+    body=models.TextField()
+    created_at=models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering=['created_at','id']
+
+class Notification(models.Model):
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='notifications')
+    title=models.CharField(max_length=160)
+    body=models.TextField(blank=True)
+    url=models.CharField(max_length=255,blank=True)
+    read_at=models.DateTimeField(null=True,blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering=['-created_at','-id']

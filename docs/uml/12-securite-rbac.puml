@@ -1,0 +1,22 @@
+@startuml
+skinparam componentStyle rectangle
+component "Requête HTTP" as request
+component "SessionAuthentication\n+ CSRF" as session
+component "CapabilityPermission" as capability
+component "AccessProfile.role\n+ superutilisateur" as role
+component "Filtrage du queryset\n+ affectation" as scope
+component "Contrôle du statut source\n+ invariants métier" as transition
+component "WorkflowEvent\n+ notifications" as trace
+
+request --> session : authentifier
+session --> capability : identifier l'acteur
+capability --> role : calculer les capacités
+role --> scope : limiter les objets visibles
+scope --> transition : autoriser l'action
+transition --> trace : journaliser
+
+note bottom of scope
+Un identifiant hors périmètre ne doit révéler
+ni l'existence ni les métadonnées de l'objet.
+end note
+@enduml

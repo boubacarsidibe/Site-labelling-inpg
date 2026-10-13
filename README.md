@@ -57,8 +57,11 @@ cd backend
 
 # Frontend
 cd frontend
+npm test
 npm run build
 ```
+
+La checklist complète, y compris migrations, sécurité et scénarios manuels, se trouve dans [docs/validation.md](docs/validation.md). `npm test` exécute le contrôle TypeScript strict du frontend et `npm run build` valide le bundle de production ; des tests E2E restent recommandés avant mise en service.
 
 ## Documentation
 
@@ -66,6 +69,8 @@ npm run build
 - [RBAC](docs/rbac.md)
 - [Workflow et audit](docs/workflow-audit.md)
 - [User stories](docs/user-stories.md)
+- [Checklist de validation](docs/validation.md)
+- [Déploiement et environnement](docs/deployment.md)
 - [Guide de contribution](CONTRIBUTING.md)
 
 ## Sécurité

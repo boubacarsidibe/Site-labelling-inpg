@@ -16,7 +16,7 @@ class InternalAccountSerializer(serializers.Serializer):
     username=serializers.CharField(max_length=150)
     email=serializers.EmailField()
     password=serializers.CharField(write_only=True,max_length=4096,trim_whitespace=False)
-    role=serializers.ChoiceField(choices=['ADMIN','MANAGER','EVALUATOR','AUDITOR','DECISION_MAKER'])
+    role=serializers.ChoiceField(choices=['MANAGER','EVALUATOR','AUDITOR','DECISION_MAKER'])
     def validate_username(self,value):
         try:
             get_user_model()._meta.get_field('username').run_validators(value)

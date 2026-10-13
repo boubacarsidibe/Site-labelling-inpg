@@ -1,0 +1,64 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor Visiteur
+actor Entreprise
+actor Professionnel
+actor Gestionnaire
+actor Evaluateur
+actor Auditeur
+actor Decideur
+actor Administrateur
+actor Superadministrateur as SuperAdmin
+
+rectangle "Plateforme Label INPG" {
+  usecase "Consulter le portail\net les formations" as UC_Public
+  usecase "S'inscrire / se connecter" as UC_Auth
+  usecase "Gérer le profil\nd'organisation" as UC_Org
+  usecase "Créer / modifier un\nbrouillon de dossier" as UC_Draft
+  usecase "Déposer un document" as UC_Upload
+  usecase "Soumettre le dossier" as UC_Submit
+  usecase "Suivre le dossier /\nrépondre aux corrections" as UC_Follow
+  usecase "Consulter les certificats" as UC_Certs
+  usecase "S'inscrire à une formation" as UC_Enroll
+  usecase "Affecter évaluateur / auditeur" as UC_Assign
+  usecase "Revoir les documents\net évaluer" as UC_Review
+  usecase "Planifier / réaliser l'audit" as UC_Audit
+  usecase "Demander / valider\nune correction" as UC_Correction
+  usecase "Préparer la décision" as UC_Prepare
+  usecase "Rendre une décision\net émettre un certificat" as UC_Decide
+  usecase "Gérer référentiels,\nformations et comptes" as UC_Admin
+  usecase "Créer les comptes internes" as UC_Accounts
+  usecase "Vérifier un certificat" as UC_Verify
+}
+Visiteur --> UC_Public
+Visiteur --> UC_Verify
+Visiteur --> UC_Auth
+Entreprise --> UC_Auth
+Entreprise --> UC_Org
+Entreprise --> UC_Draft
+Entreprise --> UC_Upload
+Entreprise --> UC_Submit
+Entreprise --> UC_Follow
+Entreprise --> UC_Certs
+Entreprise --> UC_Enroll
+Professionnel --> UC_Auth
+Professionnel --> UC_Enroll
+Gestionnaire --> UC_Assign
+Gestionnaire --> UC_Review
+Gestionnaire --> UC_Audit
+Evaluateur --> UC_Review
+Evaluateur --> UC_Correction
+Auditeur --> UC_Audit
+Auditeur --> UC_Correction
+Decideur --> UC_Prepare
+Decideur --> UC_Decide
+Administrateur --> UC_Admin
+Administrateur --> UC_Assign
+Administrateur --> UC_Review
+Administrateur --> UC_Audit
+Administrateur --> UC_Correction
+SuperAdmin --> UC_Accounts
+UC_Submit .> UC_Upload : <<include>>\npièces validées
+UC_Decide .> UC_Certs : <<include>>\nsi favorable
+@enduml

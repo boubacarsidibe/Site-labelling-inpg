@@ -12,7 +12,7 @@ En tant que visiteur, je veux comprendre les volets, les niveaux et les étapes 
 - Les principaux appels à l'action donnent accès à la demande de certification et à la vérification d'un certificat.
 - La mise en page reste exploitable sur mobile et au clavier.
 
-## Suite prioritaire
+## Périmètre fonctionnel issu du backlog
 
 1. US-02 : checklist de pièces adaptée à l'activité et aux volets.
 2. US-03 : brouillon de dossier sauvegardable.
@@ -23,3 +23,5 @@ En tant que visiteur, je veux comprendre les volets, les niveaux et les étapes 
 7. US-08 : synthèse et décision habilitée.
 8. US-09 : certificat, validité et renouvellement.
 9. US-10 : vérification publique d'un certificat.
+
+Cette liste exprime le besoin fonctionnel initial, pas l'état d'avancement du code. Une route ou un écran visible ne suffit pas à déclarer une user story terminée : son API, ses autorisations, ses cas d'erreur et ses tests doivent être validés avec [la checklist](validation.md).

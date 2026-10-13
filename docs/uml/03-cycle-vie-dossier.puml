@@ -1,0 +1,18 @@
+@startuml
+[*] --> DRAFT : création
+DRAFT --> DRAFT : modifier / déposer pièce
+DRAFT --> SUBMITTED : soumettre\n[toutes pièces obligatoires validées]
+SUBMITTED --> UNDER_REVIEW : démarrer évaluation
+UNDER_REVIEW --> CORRECTION_REQUIRED : demander correction
+CORRECTION_REQUIRED --> CORRECTION_REQUIRED : réponse entreprise
+CORRECTION_REQUIRED --> UNDER_REVIEW : toutes NC validées
+UNDER_REVIEW --> DECISION_PENDING : terminer évaluation\n[documents et NC conformes]
+DECISION_PENDING --> CERTIFIED : décision favorable / certificat
+DECISION_PENDING --> REJECTED : décision défavorable
+CERTIFIED --> [*]
+REJECTED --> [*]
+note right of UNDER_REVIEW
+Audit possible pendant l'évaluation.
+Chaque transition crée un WorkflowEvent.
+end note
+@enduml

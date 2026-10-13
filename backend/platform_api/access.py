@@ -2,13 +2,13 @@ from rest_framework.permissions import BasePermission
 from .models import AccessProfile
 
 CAPABILITIES = {
-    'PROFESSIONAL': ['portal.professional'],
-    'ENTERPRISE': ['portal.enterprise', 'organizations.read', 'organizations.update', 'applications.read', 'applications.create', 'applications.update', 'applications.submit', 'documents.upload', 'corrections.respond'],
-    'MANAGER': ['portal.admin', 'organizations.read', 'applications.read', 'applications.assign', 'applications.review', 'documents.review', 'audits.schedule'],
+    'PROFESSIONAL': ['portal.professional', 'trainings.read', 'trainings.enroll'],
+    'ENTERPRISE': ['portal.enterprise', 'organizations.read', 'organizations.update', 'applications.read', 'applications.create', 'applications.update', 'applications.submit', 'documents.upload', 'corrections.respond', 'certificates.read', 'trainings.read', 'trainings.enroll'],
+    'MANAGER': ['portal.admin', 'organizations.read', 'applications.read', 'applications.assign', 'applications.review', 'documents.review', 'audits.read', 'audits.schedule'],
     'EVALUATOR': ['portal.admin', 'applications.read', 'evaluations.read', 'evaluations.perform', 'corrections.request'],
     'AUDITOR': ['portal.admin', 'applications.read', 'audits.read', 'audits.perform', 'corrections.request'],
-    'DECISION_MAKER': ['portal.admin', 'applications.read', 'decisions.read', 'decisions.make', 'certificates.read'],
-    'ADMIN': ['portal.admin', 'organizations.read', 'organizations.create', 'organizations.update', 'organizations.delete', 'applications.read', 'applications.create', 'applications.update', 'applications.delete', 'applications.submit', 'applications.assign', 'applications.review', 'documents.review', 'documents.upload', 'evaluations.read', 'evaluations.perform', 'audits.read', 'audits.schedule', 'audits.perform', 'corrections.request', 'corrections.respond', 'decisions.read', 'decisions.make', 'certificates.read', 'certificates.manage', 'users.manage', 'referentials.manage'],
+    'DECISION_MAKER': ['portal.admin', 'applications.read', 'decisions.read', 'decisions.make', 'certificates.read', 'certificates.manage'],
+    'ADMIN': ['portal.admin', 'organizations.read', 'organizations.create', 'organizations.update', 'organizations.delete', 'applications.read', 'applications.create', 'applications.update', 'applications.delete', 'applications.submit', 'applications.assign', 'applications.review', 'documents.review', 'documents.upload', 'evaluations.read', 'evaluations.perform', 'audits.read', 'audits.schedule', 'audits.perform', 'corrections.request', 'corrections.respond', 'decisions.read', 'certificates.read', 'trainings.read', 'trainings.manage', 'trainings.enroll', 'users.manage', 'referentials.manage'],
 }
 
 def profile(user):
@@ -29,7 +29,7 @@ def role(user):
 def capabilities(user):
     result=list(CAPABILITIES.get(role(user), []))
     if user.is_authenticated and user.is_active and user.is_superuser:
-        result.append('administrators.create')
+        result.extend(['administrators.create','decisions.make','certificates.manage'])
     return result
 
 class CapabilityPermission(BasePermission):

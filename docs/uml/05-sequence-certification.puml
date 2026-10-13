@@ -1,0 +1,39 @@
+@startuml
+actor Entreprise
+actor Gestionnaire
+actor Evaluateur
+actor Auditeur
+actor Decideur
+participant "Angular" as UI
+participant "Django REST API" as API
+database "Base Django" as DB
+
+Entreprise -> UI : déposer pièces / soumettre
+UI -> API : POST documents/{id}/upload
+API -> DB : enregistrer fichier + DOCUMENT_UPLOADED
+Gestionnaire -> UI : valider pièces et affecter
+UI -> API : POST documents/{id}/review\nPOST applications/{id}/assign
+API -> DB : valider + créer affectation + événements
+Entreprise -> UI : submit
+UI -> API : POST applications/{id}/submit
+API -> DB : contrôler les pièces, status=SUBMITTED
+Evaluateur -> UI : démarrer / terminer revue
+UI -> API : POST start-review / complete-evaluation
+API -> DB : mettre à jour statut + événements
+Auditeur -> UI : réaliser audit
+UI -> API : POST complete-audit
+API -> DB : enregistrer audit + événement
+opt correction requise
+  Evaluateur -> UI : demander correction
+  UI -> API : POST request-correction
+  API -> DB : créer NC, status=CORRECTION_REQUIRED
+  Entreprise -> UI : répondre
+  UI -> API : POST respond-correction
+  Evaluateur -> UI : valider
+  UI -> API : POST validate-correction
+end
+Decideur -> UI : décider CERTIFIED
+UI -> API : POST applications/{id}/decide
+API -> DB : certificat + status=CERTIFIED + événement
+API --> UI : numéro de certificat
+@enduml

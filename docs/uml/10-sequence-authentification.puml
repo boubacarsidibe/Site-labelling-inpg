@@ -1,0 +1,20 @@
+@startuml
+actor Utilisateur
+participant "Angular" as UI
+participant "Django Auth" as Auth
+database "Session / CSRF" as Session
+
+UI -> Auth : GET /api/v1/auth/csrf/
+Auth -> Session : créer le cookie CSRF
+Auth --> UI : CSRF prêt
+Utilisateur -> UI : identifiant + mot de passe
+UI -> Auth : POST /api/v1/auth/login/\nX-CSRFToken
+Auth -> Auth : limitation 10/min\nauthenticate()
+Auth -> Session : login(request, user)
+Auth --> UI : rôle + capabilities\norganisation + cookie HttpOnly
+UI -> Auth : GET /api/v1/auth/me/
+Auth --> UI : identité courante
+Utilisateur -> UI : se déconnecter
+UI -> Auth : POST /api/v1/auth/logout/
+Auth -> Session : invalider la session
+@enduml

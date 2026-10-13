@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.test import TestCase
+from .test_support import TemporaryMediaTestCase
 from rest_framework.test import APIClient
-from .models import Organization, Application, RequiredDocument, AccessProfile, ApplicationAssignment
+from .models import Organization, Application, RequiredDocument, AccessProfile, ApplicationAssignment, Certificate, Training
 
-class RBACTests(TestCase):
+class RBACTests(TemporaryMediaTestCase):
     @classmethod
     def setUpTestData(cls):
         cls.a=Organization.objects.create(legal_name='A',ninea='A',activity='Distribution',address='Dakar')
@@ -32,6 +32,29 @@ class RBACTests(TestCase):
         self.as_role('ENTERPRISE')
         self.assertEqual([d['id'] for d in self.client.get('/api/v1/applications/').json()],[self.dossier.pk])
         self.assertEqual([d['id'] for d in self.client.get('/api/v1/organizations/').json()],[self.a.pk])
+
+    def test_enterprise_certificates_are_scoped(self):
+        own=Certificate.objects.create(application=self.dossier,number='CERT-A')
+        Certificate.objects.create(application=self.other,number='CERT-B')
+        self.as_role('ENTERPRISE')
+        result=self.client.get('/api/v1/certificates/')
+        self.assertEqual(result.status_code,200)
+        self.assertEqual([item['id'] for item in result.json()],[own.pk])
+    def test_training_catalog_and_enrollment(self):
+        training=Training.objects.create(title='Sécurité opérationnelle',description='Formation terrain',capacity=1)
+        hidden=Training.objects.create(title='Session archivée',description='Inactive',active=False)
+        self.as_role('ENTERPRISE')
+        result=self.client.get('/api/v1/trainings/')
+        self.assertEqual(result.status_code,200)
+        self.assertEqual([item['id'] for item in result.json()],[training.pk])
+        enrollment=self.client.post(f'/api/v1/trainings/{training.pk}/enroll/',{},format='json')
+        self.assertEqual(enrollment.status_code,201)
+        self.assertEqual(enrollment.json()['status'],'REQUESTED')
+        self.assertEqual(self.client.get('/api/v1/training-enrollments/').json()[0]['training'],training.pk)
+        self.assertEqual(self.client.post(f'/api/v1/trainings/{training.pk}/enroll/',{},format='json').status_code,400)
+        self.as_role('PROFESSIONAL')
+        self.assertEqual(self.client.get(f'/api/v1/trainings/{hidden.pk}/').status_code,404)
+        self.assertEqual(self.client.post(f'/api/v1/trainings/{training.pk}/enroll/',{},format='json').status_code,400)
     def test_cross_company_object_actions_denied(self):
         self.as_role('ENTERPRISE')
         url=f'/api/v1/applications/{self.other.pk}/'
@@ -76,19 +99,48 @@ class RBACTests(TestCase):
     def test_manager_assignment_and_denial(self):
         url=f'/api/v1/applications/{self.dossier.pk}/assign/'
         self.as_role('ENTERPRISE')
-        self.assertEqual(self.client.post(url,{'user_id':self.users['AUDITOR'].pk},format='json').status_code,403)
+        self.assertEqual(self.client.post(url,{'user_id':self.users['EVALUATOR'].pk},format='json').status_code,403)
         self.as_role('MANAGER')
         self.assertEqual(self.client.post(url,{'user_id':self.users['ENTERPRISE'].pk},format='json').status_code,400)
-        self.assertEqual(self.client.post(url,{'user_id':self.users['AUDITOR'].pk},format='json').status_code,200)
+        self.assertEqual(self.client.post(url,{'user_id':self.users['EVALUATOR'].pk},format='json').status_code,200)
     def test_admin_access(self):
         self.as_role('ADMIN')
         self.assertEqual(len(self.client.get('/api/v1/applications/').json()),2)
         self.assertEqual(self.client.post('/api/v1/organizations/',{'legal_name':'C','ninea':'C','activity':'Transport','address':'Dakar'},format='json').status_code,201)
+    def test_decision_maker_can_decide_and_manage_certificate(self):
+        self.dossier.status=Application.Status.DECISION_PENDING; self.dossier.save(update_fields=['status'])
+        certificate=Certificate.objects.create(application=self.other,number='CERT-LOCKED')
+        self.as_role('ADMIN')
+        self.assertEqual(self.client.post(f'/api/v1/applications/{self.dossier.pk}/decide/',{'decision':'CERTIFIED','level':'Gold'},format='json').status_code,403)
+        self.assertEqual(self.client.post(f'/api/v1/certificates/{certificate.pk}/update-status/',{'status':'SUSPENDED'},format='json').status_code,403)
+        self.as_role('DECISION_MAKER')
+        self.assertEqual(self.client.post(f'/api/v1/applications/{self.dossier.pk}/decide/',{'decision':'CERTIFIED','level':'Gold'},format='json').status_code,200)
+        issued=Certificate.objects.get(application=self.dossier)
+        certificates_url='/api/v1/certificates/'
+        listed={item['id']:item for item in self.client.get(certificates_url).json()}
+        self.assertEqual(listed[issued.pk]['stored_status'],'VALID')
+        self.assertTrue(listed[issued.pk]['is_active'])
+        self.assertEqual(self.client.post(f'/api/v1/certificates/{issued.pk}/update-status/',{'status':'SUSPENDED'},format='json').status_code,200)
+        listed={item['id']:item for item in self.client.get(certificates_url).json()}
+        self.assertEqual(listed[issued.pk]['stored_status'],'SUSPENDED')
+        self.assertFalse(listed[issued.pk]['is_active'])
+        self.as_role('ENTERPRISE')
+        application=self.client.get(f'/api/v1/applications/{self.dossier.pk}/').json()
+        self.assertEqual(application['certification_status'],'SUSPENDED')
+        self.assertFalse(application['has_active_certificate'])
+        self.assertIn('Certification suspendue',[item['title'] for item in self.client.get('/api/v1/notifications/').json()])
+        self.as_role('DECISION_MAKER')
+        self.assertEqual(self.client.post(f'/api/v1/certificates/{issued.pk}/update-status/',{'status':'VALID'},format='json').status_code,200)
+        listed={item['id']:item for item in self.client.get(certificates_url).json()}
+        self.assertEqual(listed[issued.pk]['stored_status'],'VALID')
+        self.assertTrue(listed[issued.pk]['is_active'])
+        self.assertEqual(self.client.post(f'/api/v1/certificates/{certificate.pk}/update-status/',{'status':'REVOKED'},format='json').status_code,200)
+        self.assertEqual(self.client.post(f'/api/v1/certificates/{certificate.pk}/update-status/',{'status':'VALID'},format='json').status_code,400)
     def test_submission_requires_documents_and_locks_edits(self):
         self.as_role('ENTERPRISE')
         url=f'/api/v1/applications/{self.dossier.pk}/'
         self.assertEqual(self.client.post(url+'submit/').status_code,400)
-        RequiredDocument.objects.create(application=self.dossier,domain='Sécurité',name='Proof',status='VALIDATED')
+        RequiredDocument.objects.create(application=self.dossier,domain='Sécurité',name='Proof',status='SUBMITTED')
         self.assertEqual(self.client.post(url+'submit/').status_code,200)
         self.assertEqual(self.client.post(url+'submit/').status_code,400)
         self.assertEqual(self.client.patch(url,{'level':'Platinum'},format='json').status_code,400)

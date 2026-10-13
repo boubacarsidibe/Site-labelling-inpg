@@ -1,0 +1,21 @@
+@startuml
+node "Navigateur utilisateur" as browser { artifact "SPA Angular compilée" as spa }
+node "Serveur web" as web { artifact "Fichiers statiques Angular" }
+node "Serveur applicatif Python" as app {
+  component "Django + DRF" as django
+  component "WSGI" as wsgi
+}
+database "SGBD relationnel" as db
+folder "Volume média" as media
+browser --> web : HTTPS
+browser --> django : /api via proxy HTTPS
+web --> spa
+django --> wsgi
+django --> db : ORM / SQL
+django --> media : fichiers déposés
+note bottom of app
+Vue logique dérivée de la configuration locale.
+Le choix réel de reverse proxy, SGBD et stockage
+en production reste à confirmer.
+end note
+@enduml

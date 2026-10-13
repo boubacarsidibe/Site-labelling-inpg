@@ -3,12 +3,22 @@ frontend/node_modules/
 frontend/dist/
 frontend/.angular/
 label-inpg/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Python / Django
 backend/.venv/
 backend/__pycache__/
 backend/**/__pycache__/
-backend/*.py[cod]
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
 backend/db.sqlite3
 backend/media/
 backend/staticfiles/
@@ -22,3 +32,9 @@ backend/staticfiles/
 *.log
 Thumbs.db
 Desktop.ini
+
+# Local captures and scratch files
+tmp-*.png
+tmp-*.jpg
+tmp-*.jpeg
+*.tmp

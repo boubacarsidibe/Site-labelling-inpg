@@ -1,0 +1,15 @@
+@startuml
+[*] --> VALID : décision favorable / émission
+VALID --> SUSPENDED : suspendre
+SUSPENDED --> VALID : réactiver\n[non expiré]
+VALID --> REVOKED : révoquer
+SUSPENDED --> REVOKED : révoquer
+VALID --> EXPIRED : expires_at atteint
+SUSPENDED --> EXPIRED : expires_at atteint
+REVOKED --> [*]
+EXPIRED --> [*] : renouvellement requis
+note right of EXPIRED
+EXPIRED est un statut calculé par effective_status ;
+il n'est pas enregistré dans la colonne status.
+end note
+@enduml

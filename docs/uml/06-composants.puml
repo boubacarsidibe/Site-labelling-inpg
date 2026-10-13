@@ -1,0 +1,34 @@
+@startuml
+skinparam componentStyle rectangle
+actor Utilisateur
+component "SPA Angular 18" as angular
+component "Guards + AuthService\nRBAC côté interface" as clientcore
+component "Portail public" as public
+component "Espace entreprise" as enterprise
+component "Back-office" as admin
+component "Django REST Framework\n/api/v1" as api
+component "Authentification session + CSRF" as auth
+component "Access / CapabilityPermission" as access
+component "Workflow applications" as workflow
+component "Documents" as docs
+component "Formations" as training
+database "Django ORM / base relationnelle" as db
+folder "Stockage médias" as media
+Utilisateur --> angular
+angular --> clientcore
+angular --> public
+angular --> enterprise
+angular --> admin
+angular --> api : HTTPS / JSON
+api --> auth
+api --> access
+api --> workflow
+api --> docs
+api --> training
+auth --> db
+access --> db
+workflow --> db
+docs --> db
+docs --> media
+training --> db
+@enduml

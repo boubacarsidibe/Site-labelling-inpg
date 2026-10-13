@@ -1,0 +1,30 @@
+<main>
+  <section class="hero"><div class="wrap">
+    <nav><a routerLink="/">Accueil</a><app-icon name="chevron"/><span>{{ title }}</span></nav>
+    <p class="eyebrow">{{ type==='formations' ? 'FORMATIONS INPG' : type==='acteurs' ? 'ACTEURS DE LA FILIÈRE' : 'DÉMARCHE DE CERTIFICATION' }}</p>
+    <h1>{{ title }}</h1>
+    @if(selected){<p class="lead">{{ selected.summary }}</p>} @else if(type==='demarche'){<p class="lead">Un parcours transparent, organisé en sept étapes, de la préparation de la demande au suivi de la certification.</p>} @else if(type==='acteurs'){<p class="lead">Des exigences appliquées au plus près des réalités opérationnelles de chaque activité.</p>} @else {<p class="lead">Des parcours pour les entreprises et les professionnels qui souhaitent développer leurs compétences.</p>}
+  </div></section>
+
+  <div class="wrap content">
+    @if(!selected && type==='demarche'){<section class="explanation"><h2>Une progression claire pour toutes les parties</h2><p>La démarche guide l’entreprise, organise l’évaluation et rend la décision compréhensible. Cliquez sur une étape : son explication s’affiche juste après le parcours.</p></section>}
+
+    @if(selected && type!=='demarche'){
+      <section class="feature"><div><p class="eyebrow">EN DÉTAIL</p><h2>{{ selected.name }}</h2>
+        @if(type==='acteurs'){<p>{{ selected.summary }} Le parcours de certification démarre par une définition précise du périmètre : sites, installations, équipes, produits et opérations concernés.</p><p>Les exigences et preuves attendues sont adaptées à cette réalité, afin d’éviter une checklist uniforme pour des activités aux risques différents.</p>}
+        @else {<p>{{ selected.summary }} Cette formation vise des compétences directement mobilisables dans le travail quotidien. Les dates, prérequis, modalités et tarifs seront publiés par l’INPG avant l’ouverture des inscriptions.</p><p>Les professionnels peuvent créer leur compte personnel afin de suivre les prochaines sessions, sans être rattachés à une entreprise.</p>}
+      </div><aside><app-icon [name]="selected.icon"/>@if(type==='acteurs'){<h3>Points d’attention</h3><ul>@for(point of selected.points;track point){<li>{{ point }}</li>}</ul>} @else {<h3>Modules proposés</h3><ul>@for(module of selected.modules;track module){<li>{{ module }}</li>}</ul>}</aside></section>
+    }
+
+    @if(!selected && type==='formations'){<section class="explanation"><h2>Apprendre pour mieux agir</h2><p>Les formations sont conçues pour les entreprises qui développent les compétences de leurs équipes et pour les professionnels qui construisent leur propre parcours.</p><p>Les cartes sont cliquables et ouvrent le détail de chaque formation.</p></section>}
+
+    <section class="card-grid" [class.course-grid]="type==='formations'" [attr.aria-label]="title">
+      @for(item of list;track item.slug;let i=$index){<a class="card" [routerLink]="[type==='demarche'?'/demarche':type==='acteurs'?'/acteurs':'/formations',item.slug]" [class.current]="item.slug===selected?.slug" (click)="scrollToDetail()"><span class="number">{{ type==='demarche' ? i+1 : item.tag||'' }}</span><app-icon [name]="item.icon"/><div><h3>{{ item.name }}</h3><p>{{ item.summary }}</p><span class="read">Voir les informations <app-icon name="arrow"/></span></div></a>}
+    </section>
+
+    @if(selected && type==='demarche'){
+      <section id="detail-etape" class="feature step-detail" tabindex="-1"><div><p class="eyebrow">ÉTAPE SÉLECTIONNÉE</p><h2>{{ selected.name }}</h2><p>{{ selected.detail }}</p><p>La plateforme conserve les échanges et décisions qui jalonnent cette étape, afin que l’entreprise comme l’INPG suivent l’avancement du dossier sans perdre le contexte.</p></div><aside><app-icon [name]="selected.icon"/><h3>À retenir</h3><p>Chaque étape prépare la suivante. La clarté des responsabilités, des preuves et des décisions facilite le parcours.</p></aside></section>
+    }
+    <section class="cta"><div><h2>{{ type==='formations' ? 'Prêt à vous former ?' : 'Prêt à démarrer votre démarche ?' }}</h2><p>{{ type==='formations' ? 'Créez un compte professionnel pour suivre les prochaines ouvertures de sessions.' : 'Définissez votre périmètre et les volets de certification souhaités.' }}</p></div><a class="button" [routerLink]="type==='formations'?'/inscription':'/espace/dossiers/nouveau'">{{ type==='formations' ? 'Créer mon compte' : 'Commencer ma demande' }} <app-icon name="arrow"/></a></section>
+  </div>
+</main>

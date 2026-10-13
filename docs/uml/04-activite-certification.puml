@@ -1,0 +1,35 @@
+@startuml
+start
+partition Entreprise {
+  :Créer un brouillon;
+  :Déposer les pièces requises;
+}
+partition Gestionnaire {
+  :Revoir les pièces;
+}
+while (Toutes les pièces obligatoires validées ?) is (non)
+  partition Entreprise { :Corriger / redéposer une pièce; }
+  partition Gestionnaire { :Revoir la pièce; }
+endwhile (oui)
+partition Entreprise { :Soumettre le dossier; }
+partition Gestionnaire { :Affecter un évaluateur; :Planifier un audit avec un auditeur; }
+partition Evaluateur { :Démarrer l'évaluation; }
+fork
+  partition Evaluateur { :Revoir le dossier; }
+fork again
+  partition Auditeur { :Réaliser l'audit planifié; }
+end fork
+if (Non-conformité ?) then (oui)
+  partition Evaluateur { :Demander correction; }
+  partition Entreprise { :Répondre à la correction; }
+  partition Evaluateur { :Valider la correction; }
+endif
+partition Evaluateur { :Terminer l'évaluation; }
+partition Decideur { :Rendre la décision; }
+if (Décision favorable ?) then (oui)
+  :Générer le certificat valable 3 ans;
+else (non)
+  :Clore le dossier comme refusé;
+endif
+stop
+@enduml

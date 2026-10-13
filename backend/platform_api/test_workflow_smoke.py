@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils import timezone
+from datetime import timedelta
 from rest_framework.test import APIClient
 from .models import AccessProfile, Application, ApplicationAssignment, Audit, Certificate, Organization, RequiredDocument
+from .test_support import TemporaryMediaTestCase
 
-class CurrentWorkflowSmokeTest(TestCase):
+class CurrentWorkflowSmokeTest(TemporaryMediaTestCase):
     """Verifies the complete workflow that the API exposes today, without production data."""
     def setUp(self):
         self.org=Organization.objects.create(legal_name='Entreprise test',ninea='WF-TEST',activity='Distribution',address='Dakar')
@@ -26,28 +28,28 @@ class CurrentWorkflowSmokeTest(TestCase):
 
         self.assertGreater(application.documents.count(),0)
         for document in application.documents.all():
-            uploaded=self.client.post(f'/api/v1/documents/{document.pk}/upload/',{'file':SimpleUploadedFile(f'{document.pk}.pdf',b'proof',content_type='application/pdf')},format='multipart')
+            uploaded=self.client.post(f'/api/v1/documents/{document.pk}/upload/',{'file':SimpleUploadedFile(f'{document.pk}.pdf',b'%PDF-1.4\nproof\n%%EOF',content_type='application/pdf')},format='multipart')
             self.assertEqual(uploaded.status_code,200)
+
+        self.assertEqual(self.client.post(f'/api/v1/applications/{application_id}/submit/').status_code,200)
+        application.refresh_from_db()
+        self.assertEqual(application.status,Application.Status.SUBMITTED)
 
         self.as_role('MANAGER')
         for document in application.documents.all():
             reviewed=self.client.post(f'/api/v1/documents/{document.pk}/review/',{'status':'VALIDATED','comment':'Pièce conforme.'},format='json')
             self.assertEqual(reviewed.status_code,200)
 
-        self.as_role('ENTERPRISE')
-        self.assertEqual(self.client.post(f'/api/v1/applications/{application_id}/submit/').status_code,200)
-        application.refresh_from_db()
-        self.assertEqual(application.status,Application.Status.SUBMITTED)
-
-        self.as_role('MANAGER')
-        for role in ['EVALUATOR','AUDITOR']:
-            result=self.client.post(f'/api/v1/applications/{application_id}/assign/',{'user_id':self.users[role].pk},format='json')
-            self.assertEqual(result.status_code,200)
-        self.assertEqual(ApplicationAssignment.objects.filter(application=application).count(),2)
+        result=self.client.post(f'/api/v1/applications/{application_id}/assign/',{'user_id':self.users['EVALUATOR'].pk},format='json')
+        self.assertEqual(result.status_code,200)
+        self.assertEqual(ApplicationAssignment.objects.filter(application=application).count(),1)
         self.assertEqual(self.client.post(f'/api/v1/applications/{application_id}/start-review/',{'note':'Dossier complet.'},format='json').status_code,200)
         application.refresh_from_db()
         self.assertEqual(application.status,Application.Status.UNDER_REVIEW)
-        planned=self.client.post(f'/api/v1/applications/{application_id}/schedule-audit/',{'auditor_id':self.users['AUDITOR'].pk},format='json')
+        planned=self.client.post(f'/api/v1/applications/{application_id}/schedule-audit/',{
+            'auditor_id':self.users['AUDITOR'].pk,
+            'scheduled_for':(timezone.now()+timedelta(days=1)).isoformat(),
+        },format='json')
         self.assertEqual(planned.status_code,201)
 
         self.as_role('AUDITOR')

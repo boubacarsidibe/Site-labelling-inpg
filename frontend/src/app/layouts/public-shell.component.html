@@ -14,5 +14,6 @@
     @if(auth.user()){<a class="auth-space" [routerLink]="auth.landing" (click)="menuOpen=false"><app-icon name="people"/>Mon espace</a><button class="auth-logout" (click)="logout()">Déconnexion</button>}@else{<a class="auth-register" routerLink="/inscription" (click)="menuOpen=false">Inscription</a><a class="auth-login" routerLink="/connexion" (click)="menuOpen=false">Connexion</a>}
   </div>
 </header>
+@if(logoutError){<p class="shell-error" role="alert">{{logoutError}}</p>}
 <div id="public-content"><router-outlet/></div>
 <footer class="simple-footer"><span>© 2026 INPG · Institut National du Pétrole et du Gaz</span><nav aria-label="Liens de pied de page"><a routerLink="/label">Le Label</a><a routerLink="/contact">Contact</a><a href="https://inpgsenegal.com/" target="_blank" rel="noopener noreferrer">Site institutionnel</a></nav></footer>

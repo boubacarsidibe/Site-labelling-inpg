@@ -1,0 +1,27 @@
+@startuml
+package frontend {
+  package "core" { [auth.guard] [auth.service] [models] }
+  package "features.public" { [home] [login] [register] [explore] }
+  package "features.enterprise" { [dashboard] [certification] [documents] [corrections] [trainings] }
+  package "features.admin" { [console] [workflow] [evaluations] [referentials] }
+  package layouts
+}
+package backend {
+  package config
+  package platform_api {
+    [models] [serializers] [views] [access] [auth_views] [registration] [admin_accounts]
+  }
+}
+package documentation { [user-stories] [rbac] [workflow-audit] }
+[auth.guard] --> [auth.service]
+[features.enterprise] ..> [auth.guard]
+[features.admin] ..> [auth.guard]
+[auth.service] --> [auth_views]
+[features.public] --> [registration]
+[features.enterprise] --> [views]
+[features.admin] --> [views]
+[views] --> [serializers]
+[views] --> [access]
+[serializers] --> [models]
+[access] --> [models]
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+actor Entreprise
+actor "Evaluateur / Auditeur" as Reviewer
+participant "Angular" as UI
+participant "Django REST API" as API
+database "Base Django" as DB
+
+Reviewer -> UI : décrire la non-conformité
+UI -> API : POST applications/{id}/request-correction
+API -> DB : créer NC OPEN\nstatus=CORRECTION_REQUIRED\nWorkflowEvent + notifications
+Entreprise -> UI : transmettre la réponse corrective
+UI -> API : POST applications/{id}/respond-correction
+API -> DB : NC=CORRECTED + WorkflowEvent
+Reviewer -> UI : valider la correction
+UI -> API : POST applications/{id}/validate-correction
+API -> DB : NC=VALIDATED + WorkflowEvent
+alt toutes les NC sont validées
+  API -> DB : status=UNDER_REVIEW
+else une NC reste ouverte ou corrigée
+  API -> DB : conserver CORRECTION_REQUIRED
+end
+API --> UI : statut de la NC et du dossier
+@enduml

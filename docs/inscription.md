@@ -1,9 +1,29 @@
-# Inscription et comptes internes
+# Inscription et comptes
 
-Deux liens distincts dans l’en-tête : `/inscription` et `/connexion`.
+L'inscription publique et le provisionnement des comptes internes sont deux parcours séparés.
 
-Inscription publique : uniquement Entreprise et Professionnel. Un professionnel ne possède aucun droit sur les dossiers ou organisations. Une entreprise nouvellement inscrite obtient sa propre organisation ; un NINEA existant ne permet jamais de rejoindre une entreprise sans intervention administrative. La déclaration d’entreprise n’est pas une vérification de son identité juridique. La vérification d’e-mail et le module de formation ne sont pas encore implémentés.
+## Inscription publique
 
-Les comptes internes (administrateur, gestionnaire, évaluateur, auditeur, décideur) sont créés exclusivement par un superutilisateur connecté via `POST /api/v1/admin/accounts/`, avec `username`, `email`, `password` et `role`. La protection CSRF s’applique. Aucun champ envoyé ne permet de créer un nouveau superutilisateur. Un administrateur ordinaire reçoit 403. Aucune inscription publique administrative n’existe.
+Les liens `/inscription` et `/connexion` restent distincts. L'inscription publique accepte uniquement les profils Entreprise et Professionnel : aucun champ transmis par le navigateur ne permet d'obtenir un rôle interne ou un statut de superutilisateur.
 
-Le superutilisateur initial se crée par la commande interactive Django `manage.py createsuperuser` sur le serveur. Aucun compte par défaut n’est créé. La commande `set_role` est désormais réservée aux profils Entreprise/Professionnel : l’ancien exemple EVALUATOR de `rbac.md` est remplacé par ce parcours superutilisateur. L’interface de création des comptes internes reste à construire ; l’endpoint est disponible et testé.
+- Une entreprise nouvellement inscrite obtient sa propre organisation.
+- Un NINEA déjà enregistré ne rattache jamais automatiquement un nouveau compte à l'organisation existante.
+- La déclaration saisie lors de l'inscription ne vaut pas vérification de l'identité juridique.
+- Un professionnel n'obtient aucun droit sur les organisations ou dossiers de certification.
+- Aucun compte par défaut ni mot de passe partagé n'est créé par le projet.
+
+## Comptes internes
+
+Les comptes internes ne disposent d'aucune inscription publique. Un superutilisateur les crée via `POST /api/v1/admin/accounts/` avec `username`, `email`, `password` et l'un des rôles autorisés : `MANAGER`, `EVALUATOR`, `AUDITOR` ou `DECISION_MAKER`. La protection CSRF s'applique. L'endpoint ne permet de créer ni un administrateur, ni un superutilisateur.
+
+Le premier superutilisateur est créé de façon interactive sur le serveur :
+
+```powershell
+.\.venv\Scripts\python.exe manage.py createsuperuser
+```
+
+La commande `set_role` sert uniquement aux opérations explicitement prévues par sa propre liste de rôles ; elle ne doit pas contourner le provisionnement ou la séparation des responsabilités. Après toute création ou modification de compte, vérifier les capacités réellement renvoyées par `/api/v1/auth/me/`.
+
+## Cycle de vie
+
+La création d'un compte n'est qu'une étape du contrôle d'accès. L'exploitation doit aussi prévoir la vérification de l'adresse électronique si elle est requise, la désactivation, la révocation des affectations, la rotation des mots de passe et la traçabilité des changements de rôle. Désactiver un compte (`is_active=False`) révoque son accès dès les requêtes suivantes.

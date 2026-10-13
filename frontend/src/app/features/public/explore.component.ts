@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IconComponent } from '../../shared/components/icon.component';
 
-@Component({standalone:true,imports:[RouterLink,IconComponent],templateUrl:'./explore.component.html',styleUrl:'./explore.component.css'})
+@Component({standalone:true,imports:[RouterLink,IconComponent],templateUrl:'./explore-v2.component.html',styleUrl:'./explore.component.css'})
 export class ExploreComponent {
   private route=inject(ActivatedRoute); private params=toSignal(this.route.paramMap);
   readonly steps=[
@@ -28,9 +28,19 @@ export class ExploreComponent {
     {slug:'qualite',name:'Management de la qualité',tag:'QUALITÉ',icon:'medal',summary:'Structurer les processus et l’amélioration continue.',modules:['Cartographier les processus essentiels','Mettre en place des indicateurs utiles','Traiter les anomalies et les actions correctives']},
     {slug:'environnement',name:'Management environnemental',tag:'ENVIRONNEMENT',icon:'leaf',summary:'Réduire les impacts liés aux activités professionnelles.',modules:['Identifier les aspects et impacts','Gérer les déchets, rejets et consommations','Suivre les plans d’action environnementaux']},
     {slug:'audit',name:'Pratique de l’audit interne',tag:'AUDIT',icon:'chart',summary:'Conduire un audit utile et restituer des constats clairs.',modules:['Préparer le plan d’audit','Recueillir des preuves et mener les entretiens','Suivre les constats et les actions']}
+    ,{slug:'incendie',name:'Sécurité incendie et première intervention',tag:'SÉCURITÉ',icon:'shield',summary:'Préparer les équipes à prévenir et maîtriser un départ de feu.',modules:['Prévention et conduite à tenir en cas d’alerte','Choix et utilisation des moyens de première intervention','Organisation des consignes et exercices sur site']}
+    ,{slug:'atex',name:'Zones ATEX et opérations de dépotage',tag:'SÉCURITÉ',icon:'tool',summary:'Maîtriser les risques d’atmosphères explosives pendant les opérations sensibles.',modules:['Identifier les zones et sources d’inflammation','Préparer et sécuriser le dépotage','Appliquer la signalisation et les mesures de prévention']}
+    ,{slug:'metrologie',name:'Métrologie, contrôle des produits et traçabilité',tag:'QUALITÉ',icon:'flask',summary:'Fiabiliser les mesures, les analyses et les enregistrements de contrôle.',modules:['Étalonnage et suivi des équipements de mesure','Contrôle et analyse des produits pétroliers','Traçabilité des échantillons, résultats et décisions']}
+    ,{slug:'iso-17025',name:'Exigences ISO/IEC 17025',tag:'QUALITÉ',icon:'medal',summary:'Structurer la compétence des laboratoires d’essais et d’étalonnages.',modules:['Impartialité et compétences techniques','Maîtrise des méthodes, équipements et données','Traitement des écarts et assurance qualité des résultats']}
+    ,{slug:'pollution',name:'Prévention de la pollution et plan d’urgence',tag:'ENVIRONNEMENT',icon:'leaf',summary:'Réduire les impacts, réagir aux déversements et organiser le retour à la normale.',modules:['Kits anti-pollution et premiers gestes','Plan d’opération interne et simulations','Gestion des déchets, eaux souillées et séparateurs']}
+    ,{slug:'transport-dangerous',name:'Transport des matières dangereuses',tag:'ENVIRONNEMENT',icon:'truck',summary:'Sécuriser le transport des produits et la gestion des incidents de route.',modules:['Préparation du véhicule, du trajet et des documents','Consignes de conduite et de chargement','Réponse aux incidents et protection de l’environnement']}
   ];
   get type(){return this.route.snapshot.routeConfig?.path?.split('/:')[0]||'demarche';} get key(){return this.params()?.get(this.type==='demarche'?'step':this.type==='acteurs'?'actor':'course');}
   get selected():any{const list=this.type==='demarche'?this.steps:this.type==='acteurs'?this.actors:this.courses;return list.find(item=>item.slug===this.key);}
   get title(){return this.selected?.name||({demarche:'Démarche de certification',acteurs:'Acteurs concernés',formations:'Formations INPG'}[this.type]||'Label INPG');}
   get list():any[]{return this.type==='demarche'?this.steps:this.type==='acteurs'?this.actors:this.courses;}
+  scrollToDetail(){
+    if(this.type!=='demarche')return;
+    setTimeout(()=>document.getElementById('detail-etape')?.scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }
 }

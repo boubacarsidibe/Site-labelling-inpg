@@ -1,0 +1,43 @@
+@startuml
+hide methods
+skinparam classAttributeIconSize 0
+class User <<Django>> { username; email; is_active; is_superuser }
+class AccessProfile { role: Role }
+class Organization { legal_name; ninea {unique}; activity; address }
+class Application { reference {unique}; request_type; level; activity; status; domains: JSON; scope; description; created_at }
+class RequiredDocument { domain; name; mandatory; status; file; review_comment; submitted_at; reviewed_at }
+class ApplicationAssignment
+class WorkflowEvent { event_type; note; created_at }
+class Audit { scheduled_for; performed_at; status; summary }
+class NonConformity { reference; domain; description; severity; status; response; created_at }
+class Certificate { number {unique}; issued_at; expires_at; status }
+class RequirementTemplate { domain; activity; name; mandatory; active; version }
+class ApplicationMessage { body; created_at }
+class Notification { title; body; url; read_at; created_at }
+class Training { title; description; duration_days; format; starts_at; capacity; active }
+class TrainingEnrollment { status; enrolled_at }
+
+User "1" -- "0..1" AccessProfile
+Organization "1" -- "0..*" Application : dossiers
+Organization "0..1" -- "0..*" AccessProfile : rattachement
+Application "1" *-- "0..*" RequiredDocument
+Application "1" *-- "0..*" WorkflowEvent
+Application "1" *-- "0..*" Audit
+Application "1" *-- "0..*" NonConformity
+Application "1" -- "0..1" Certificate
+Application "1" *-- "0..*" ApplicationMessage
+Application "1" -- "0..*" ApplicationAssignment
+ApplicationAssignment "*" -- "1" User : assigné
+WorkflowEvent "*" --> "0..1" User : acteur
+Audit "*" --> "1" User : auditeur
+ApplicationMessage "*" --> "0..1" User : auteur
+Notification "*" --> "1" User : destinataire
+Training "1" *-- "0..*" TrainingEnrollment
+TrainingEnrollment "*" --> "1" User
+TrainingEnrollment "*" --> "0..1" Organization
+note right of Application
+status = DRAFT | SUBMITTED | UNDER_REVIEW |
+CORRECTION_REQUIRED | DECISION_PENDING |
+CERTIFIED | REJECTED
+end note
+@enduml

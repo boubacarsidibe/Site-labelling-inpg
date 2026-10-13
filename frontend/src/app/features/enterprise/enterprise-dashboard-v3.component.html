@@ -1,0 +1,24 @@
+<div class="dashboard-head"><div><p class="eyebrow">ESPACE ENTREPRISE</p><h1>Tableau de bord</h1><p>Suivez vos démarches de certification et les actions à réaliser.</p></div><a class="button" routerLink="/espace/dossiers/nouveau">Nouvelle demande <app-icon name="arrow"/></a></div>
+
+@if(loading){<p class="loading">Chargement de vos dossiers…</p>}
+@else if(error){<p class="notice error" role="alert">{{error}}</p>}
+@else {
+  @if(activeApplication;as current){
+    <section class="active-dossier">
+      <header><div class="panel-title"><span class="title-icon"><app-icon name="building"/></span><div><p class="eyebrow">DOSSIER ACTIF</p><h2>{{current.reference}}</h2><p>{{requestType(current)}} · {{current.activity}}</p></div></div><div class="top-meta"><span class="level">{{current.level}}</span><span [class]="'app-status '+current.status">{{label(current.status)}}</span></div></header>
+      <div class="domains">@for(domain of current.domains;track domain){<span><app-icon [name]="domain==='Sécurité'?'shield':domain==='Qualité'?'medal':'leaf'"/>{{domain}}</span>}</div>
+      <ol class="journey" [attr.aria-label]="'Étapes de '+current.reference">@for(stepName of workflow;track stepName;let index=$index){<li [class.done]="index<stage(current)" [class.current]="index===stage(current)"><span>{{index+1}}</span><small>{{stepName}}</small></li>}</ol>
+      <div class="active-footer"><span>Étape actuelle : <strong>{{workflow[stage(current)]}}</strong></span><a [routerLink]="['/espace/dossiers',current.id]">Ouvrir le dossier <app-icon name="arrow"/></a></div>
+    </section>
+
+    <section class="command-grid">
+      <article class="priority-panel"><header><span class="title-icon"><app-icon name="check"/></span><div><h2>Actions prioritaires</h2><p>Les actions affichées sont calculées à partir de votre dossier.</p></div></header><div class="action-list">@for(action of actions(current);track action.label){<a [routerLink]="action.route"><span class="action-icon"><app-icon [name]="action.icon"/></span><span><strong>{{action.label}}</strong><small>{{action.detail}}</small></span><app-icon name="arrow"/></a>}</div></article>
+      <article class="conformity-panel"><header><span class="title-icon"><app-icon name="chart"/></span><div><h2>Documents & conformité</h2><p>État réel des pièces de votre dossier actif.</p></div></header><div class="conformity-body"><div class="score"><strong>{{compliance(current)}}%</strong><span>validé</span></div><div class="document-counts"><p><span>Pièces attendues</span><strong>{{documents(current).total}}</strong></p><p><span>Déposées</span><strong>{{documents(current).deposited}} / {{documents(current).total}}</strong></p><p><span>Validées par l’INPG</span><strong>{{documents(current).validated}} / {{documents(current).total}}</strong></p></div></div><a class="subtle-link" [routerLink]="['/espace/dossiers',current.id,'documents']">Voir les documents <app-icon name="arrow"/></a></article>
+    </section>
+    @if(nextAudit(current);as audit){<section class="audit-strip"><app-icon name="chart"/><div><p class="eyebrow">AUDIT PLANIFIÉ</p><strong>{{audit.scheduled_for|date:'EEEE d MMMM y, HH:mm'}}</strong><span> · {{audit.auditor_name}}</span></div><a [routerLink]="['/espace/dossiers',current.id]">Voir le rendez-vous <app-icon name="arrow"/></a></section>}
+  } @else {<section class="welcome-empty"><span class="title-icon"><app-icon name="shield"/></span><div><p class="eyebrow">COMMENCEZ VOTRE PARCOURS</p><h2>Aucune demande active</h2><p>Créez une demande pour constituer votre dossier de certification, sélectionner vos volets et recevoir votre checklist adaptée.</p></div></section>}
+
+  <section class="requests-panel"><header><div><p class="eyebrow">HISTORIQUE</p><h2>Mes demandes</h2></div><span>{{applications.length}} dossier{{applications.length>1?'s':''}}</span></header>
+    @if(applications.length){<div class="requests-table"><div class="table-head"><span>Référence</span><span>Activité</span><span>Niveau</span><span>Statut</span><span>Créée le</span><span></span></div>@for(item of applications;track item.id){<div class="table-row"><strong>{{item.reference}}</strong><span>{{item.activity}}</span><span class="level small">{{item.level}}</span><span [class]="'app-status '+displayStatusClass(item)">{{displayStatus(item)}}</span><span>{{item.created_at|date:'dd/MM/yyyy'}}</span><a [routerLink]="['/espace/dossiers',item.id]">Voir <app-icon name="arrow"/></a></div>}</div>} @else {<p class="no-requests">Vos demandes apparaîtront ici dès leur création.</p>}
+  </section>
+}
