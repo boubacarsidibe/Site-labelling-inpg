@@ -47,7 +47,7 @@ Les timecodes sont ceux du montage final (6:54). Un fondu de 0,5 s relie chaque 
 | 5:57 – 6:19 | Carton récapitulatif « Qui peut faire quoi ? » | Lignes du tableau en cascade (6 rôles × 11 actions) | En résumé : l'entreprise dépose et corrige. Le gestionnaire vérifie et affecte. L'évaluateur et l'auditeur examinent. Le décideur certifie. L'administrateur pilote les certificats et les référentiels. Chacun à sa place, sur un même dossier. | « Droits vérifiés par l’API à chaque requête » |
 | 6:19 – 6:54 | Prochaines étapes, puis logo de fin | Trois pastilles puis fondu vers le logo | Prochaines étapes : le module Formations, la mise en service pour les premières entreprises candidates, et le suivi des renouvellements. Plateforme Label INPG : une certification simple, traçable et fiable. | « Plateforme Label INPG — Une certification simple, traçable et fiable. Réalisé par Boubacar SIDIBE » |
 
-Voix off : 794 mots, une seule voix française féminine, ralentie à 95 % pour un débit posé. Sous-titres français synchronisés sur la voix. Musique instrumentale, atténuée automatiquement sous la voix.
+Voix off : 794 mots, une seule voix française féminine (ElevenLabs « Perle »), ralentie à 95 % pour un débit posé. Sous-titres français synchronisés sur la voix. Musique instrumentale, atténuée automatiquement sous la voix.
 
 ## 2. Plans d'écran enregistrés, dans l'ordre
 
@@ -75,14 +75,14 @@ Cartons animés : `what`, `levels`, `parcours`, `plateforme`, `menus`, `fiable`,
 
 ## 3. Refaire la vidéo
 
-Prérequis : Node.js avec `playwright`, `ffmpeg`, Python 3 avec `numpy`, le paquet système `libttspico-utils` (voix gratuite), les polices Inter.
+Prérequis : Node.js avec `playwright`, `ffmpeg`, Python 3 avec `numpy`, le paquet système `libttspico-utils` (voix gratuite de secours), les polices Inter.
 
 ```bash
 # API sur base vierge (DJANGO_DEBUG=1, DATABASE_URL sqlite), superutilisateur « superadmin », interface sur :4200
 export DEMO_PASSWORD='…'            # jamais versionné
 export VIDEO_DIR=/chemin/de/travail # contient slides/ (slides.html + inpg-logo.svg et label-hero.png copiés de frontend/src/assets), audio/, shots/
 cd docs/video-demo/outils
-python3 tts.py                      # voix off (SVOX Pico) à partir de vo.json
+python3 tts.py                      # voix de secours gratuite (SVOX Pico) à partir de vo.json
 node record.mjs                     # écrans de l'application
 node rec-slides.mjs                 # cartons animés
 python3 music.py 470 && ffmpeg -i $VIDEO_DIR/audio/music_raw.wav -ar 48000 $VIDEO_DIR/audio/music.wav
@@ -93,7 +93,7 @@ python3 compose.py all              # montage, sous-titres, mixage -> $VIDEO_DIR
 
 ## Notes
 
-- **Voix** : la première version utilisait une voix premium ElevenLabs. Faute de crédits, cette version utilise une voix gratuite générée localement (SVOX Pico). Pour revenir à une voix premium, déposer les fichiers `s01.mp3` … `s18.mp3` dans `audio/` et relancer `compose.py all`.
+- **Voix** : voix premium ElevenLabs « Perle » (modèle eleven_v4), générée segment par segment à partir de `vo.json` (`audio/s01.mp3` … `s18.mp3`, `s16b.mp3`). `tts.py` (SVOX Pico, gratuit) reste disponible en secours : il produit les mêmes fichiers dans `audio/`, puis `compose.py all` reconstruit la vidéo.
 - **Temps réel** : l'application met à jour les écrans toutes les 30 s (sondage) et prévient par un bandeau ; la vidéo montre ce bandeau tel quel, sans prétendre à une diffusion instantanée.
 - **E-mails** : les notifications partent par e-mail (console en développement) ; elles ne sont pas filmées.
 - **Formations** : l'espace entreprise propose le catalogue ; le suivi des inscriptions n'existe pas encore (« Prochaines étapes »).
