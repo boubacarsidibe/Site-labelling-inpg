@@ -44,6 +44,8 @@ python manage.py runserver 127.0.0.1:8000
 
 Sous Linux/macOS : `export DJANGO_DEBUG=1` au lieu de `$env:DJANGO_DEBUG = "1"`.
 
+Pour essayer tout de suite : `python manage.py seed_demo` crée un compte par rôle (`admin`, `entreprise`, `gestionnaire`, `evaluateur`, `auditeur`, `decideur`, mot de passe `Demo-Label2026!`, développement uniquement).
+
 Le superutilisateur crée ensuite les comptes internes (gestionnaire, évaluateur, auditeur, décideur, administrateur) depuis **Administration → Utilisateurs**. En développement, les e-mails (notifications, invitations, réinitialisation de mot de passe) s'affichent dans la console du serveur.
 
 ### Interface Angular
